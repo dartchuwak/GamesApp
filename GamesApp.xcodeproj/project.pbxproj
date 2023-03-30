@@ -72,7 +72,7 @@
 			isa = PBXGroup;
 			children = (
 				A3F1A71029D634B300F94F03 /* Model */,
-				A3F1A70F29D634A600F94F03 /* Serices */,
+				A3F1A70F29D634A600F94F03 /* Services */,
 				A3F1A70E29D6349400F94F03 /* GameDetailsModule */,
 				A3F1A70D29D6347B00F94F03 /* GamesListModule */,
 				A3F1A70C29D6346700F94F03 /* Application */,
@@ -120,12 +120,12 @@
 			path = GameDetailsModule;
 			sourceTree = "<group>";
 		};
-		A3F1A70F29D634A600F94F03 /* Serices */ = {
+		A3F1A70F29D634A600F94F03 /* Services */ = {
 			isa = PBXGroup;
 			children = (
 				A3F1A6F829D632C200F94F03 /* NetworkService.swift */,
 			);
-			path = Serices;
+			path = Services;
 			sourceTree = "<group>";
 		};
 		A3F1A71029D634B300F94F03 /* Model */ = {
