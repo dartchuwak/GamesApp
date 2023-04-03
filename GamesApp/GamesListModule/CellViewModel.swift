@@ -12,6 +12,16 @@ class CellViewModel: ObservableObject {
     
     var game: Game
     
+    var priceDifferenceInPercent: Double {
+        let basePrice = Double(game.BasePrice)!
+        let salePrice = Double(game.SalePrice)!
+           
+           let priceDifference = basePrice - salePrice
+           let percentageDifference = (priceDifference / basePrice) * 100
+
+           return percentageDifference
+       }
+    
     init ( game: Game) {
         self.game = game
     }

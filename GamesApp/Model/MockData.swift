@@ -8,7 +8,7 @@
 import Foundation
 
 
-let gameResponce: [Game] = loadJson("data.json")
+let gameResponse: DiscountsResponse = loadJson("data.json")
 
 
 
@@ -33,3 +33,7 @@ func loadJson<T: Decodable>(_ filename: String, as type: T.Type = T.self) -> T {
         fatalError("Couldn't parse \(filename) as \(T.self):\n\(error)")
     }
 }
+
+
+
+let gameMock: GameInfo = loadJson("game.json")

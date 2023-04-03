@@ -14,34 +14,53 @@ struct MyCellView: View {
     @ObservedObject var viewModel: CellViewModel
     
     var body: some View {
-        VStack (alignment: .center) {
-            //
-            AsyncImage(url: URL(string: viewModel.game.background_image ?? "") ) { image in
+        VStack (spacing: 10) {
+            
+            AsyncImage(url: URL(string: viewModel.game.Img) ) { image in
                 image.resizable()
                 
             } placeholder: {
+                
                 ProgressView()
+                    .frame(width: 150, height: 150)
+                
             }
-            .frame(width: UIScreen.main.bounds.width-24, height: (UIScreen.main.bounds.width-24)/1.77)
-            .scaledToFill()
+            .frame(width: 150)
+            .aspectRatio( 1.0, contentMode: .fit)
+            //  .scaledToFit()
+            
             .clipped()
-            //
-            //
-            HStack {
-                Text(viewModel.game.name ?? "No name")
-                    .multilineTextAlignment(.center)
+            .cornerRadius(15)
+            HStack{
+                Text("-\(viewModel.priceDifferenceInPercent, specifier: "%.0f")%")
+                    .padding(4)
+                    .background(Color.black)
+                    .foregroundColor(.white)
+                    .cornerRadius(5)
+                    .font(.subheadline)
+                
+                Spacer()
             }
+            
+            
+            HStack {
+                Text(viewModel.game.formattedSalePrice)
+                Text(viewModel.game.formattedBasePrice)
+                    .strikethrough()
+                    .foregroundColor(.gray)
+                Spacer()
+            }
+            
         }
-        .background(Color.orange)
-        .cornerRadius(15)
-        .frame(width: UIScreen.main.bounds.width-24)
-        .padding()
+        
+        .frame(width: 150)
         
     }
+    
 }
 
 struct MyCellView_Previews: PreviewProvider {
     static var previews: some View {
-        MyCellView( viewModel:CellViewModel( game: gameResponce.first!))
+        MyCellView( viewModel:CellViewModel( game: gameResponse.game_discounts[10]))
     }
 }
