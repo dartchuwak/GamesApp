@@ -10,7 +10,7 @@ import SwiftUI
 
 
 // MARK: - DiscountsResponse
-struct DiscountsResponse: Hashable,  Decodable {
+struct GameDiscountsResponse: Hashable,  Decodable {
     let SaleName: String?
     let SaleTime: String?
     let SaleEnd: String?
@@ -107,6 +107,10 @@ struct GameInfo: Decodable {
     let errorDesc: String
     let apiLimit: String
     let apiUsage: String
+    let PSPlusNeeded: String
+    let OnlinePlay: String
+    let OfflinePlayers: String
+    let OnlinePlayers: String
     
 }
 

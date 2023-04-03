@@ -17,17 +17,27 @@ final class ScreenFactory {
     fileprivate init() {
     }
     
-    func makeMainScreen() -> MainView {
-        return MainView(viewModel: applicationFactory.mainViewModel as! MainViewModel)
+    func makeGamesScreen() -> GamesView {
+        return GamesView(viewModel: applicationFactory.mainViewModel as! MainViewModel)
     }
     
     func makeSearchScreen() -> SearchView {
         return SearchView(viewModel: applicationFactory.searchViewModel as! SearchViewModel)
     }
     
+    func makeDiscountsScreen() -> DiscountsView {
+        return DiscountsView()
+    }
+    
     func makeTabViewScreen() -> some View {
          TabView {
-             makeMainScreen()
+             makeDiscountsScreen()
+                 .tabItem {
+                     Image(systemName: "percent")
+                     Text("Скидки")
+                 }
+             
+             makeGamesScreen()
                  .tabItem {
                      Image(systemName: "house.fill")
                      Text("Home")

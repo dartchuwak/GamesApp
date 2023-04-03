@@ -61,6 +61,6 @@ struct MyCellView: View {
 
 struct MyCellView_Previews: PreviewProvider {
     static var previews: some View {
-        MyCellView( viewModel:CellViewModel( game: gameResponse.game_discounts[10]))
+        MyCellView( viewModel:CellViewModel( game: gameResponseMock.game_discounts[13]))
     }
 }

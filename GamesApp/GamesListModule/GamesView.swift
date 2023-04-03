@@ -1,11 +1,11 @@
 import SwiftUI
 
-struct MainView: View {
+struct GamesView: View {
     
     @ObservedObject var viewModel: MainViewModel
    
     @State private var showCancelButton = false
-    @State var games: [Game] = []
+  //  @State var games: [Game] = []
     
     let columns: [GridItem] = [
         GridItem(.fixed(150), spacing: 20),
@@ -17,7 +17,7 @@ struct MainView: View {
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 20) {
                   
-                    ForEach(gameResponse.game_discounts, id: \.self) { game in
+                    ForEach(viewModel.games, id: \.self) { game in
                             NavigationLink(
                                 destination: DetailsView(viewModel: DetailsViewModel(id: game.PPID, networkService: NetworkService())),
                                 label: {
@@ -39,6 +39,6 @@ struct ContentView_Previews: PreviewProvider {
     
     static let ns = NetworkService()
     static var previews: some View {
-        MainView(viewModel: MainViewModel(networkService: ns))
+        GamesView(viewModel: MainViewModel(networkService: ns))
     }
 }

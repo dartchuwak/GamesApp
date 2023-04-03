@@ -23,7 +23,7 @@ final class MainViewModel: MainViewModelProtocol {
     
     init (networkService: NetworkServiceProtocol) {
         self.networkService = networkService
-     //   loadDiscounts()
+        loadDiscounts()
     }
      
     

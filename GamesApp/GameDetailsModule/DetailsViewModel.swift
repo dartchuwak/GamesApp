@@ -37,8 +37,8 @@ class DetailsViewModel: DetailsViewModelProtocol, ObservableObject {
     init (id: String, networkService: NetworkServiceProtocol) {
         self.id = id
         self.networkService = networkService
-       // searchGame(with: id)
-        self.game = gameMock
+        searchGame(with: id)
+        //self.game = gameMock
         self.configureScreenshots()
     }
     

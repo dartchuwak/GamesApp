@@ -8,7 +8,7 @@
 import Foundation
 
 
-let gameResponse: DiscountsResponse = loadJson("data.json")
+let gameResponseMock: GameDiscountsResponse = loadJson("data.json")
 
 
 

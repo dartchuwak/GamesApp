@@ -18,8 +18,10 @@ struct DetailsView: View {
             GeometryReader { geo in
                 ScrollView {
                     VStack(alignment: .center, spacing: 12) {
-                        
-                        ImageView(geo: geo, game: game)
+                        ZStack {
+                            ImageView(geo: geo, game: game)
+                            // Text(game.PSPPremium)
+                        }
                         
                         VStack(alignment: .leading, spacing: 12) {
                             
@@ -45,7 +47,50 @@ struct DetailsView: View {
                                 DiscountView(game: game, geo: geo)
                             }
                             
+                            
+                            if game.PSPlusNeeded == "1" && game.OnlinePlay == "1" {
+                                HStack {
+                                    Image(systemName: "circle.grid.cross.fill")
+                                    Text("Для игры в сети требуется PS Plus")
+                                }
+                                .padding()
+                            }
+                            
+                            if game.OnlinePlay == "1" {
+                                
+                                HStack {
+                                    Image(systemName: "network")
+                                    Text("Возможна игра в сети")
+                                }
+                                .padding()
+                                if game.OnlinePlay == "1" {
+                                    HStack {
+                                        Image(systemName: "network")
+                                        Text("До \(game.OnlinePlayers) игроков в сети")
+                                    }
+                                    .padding()
+                                }
+                                
+                                
+                            }
+                            
+                            HStack {
+                                Image(systemName: "person.3.fill")
+                                Text("Игроки: \(game.OfflinePlayers)")
+                            }
+                            .padding()
+                            
+                            Text("Рейтинг: \(game.Rating)")
+                                .padding()
+                            
+                            
+                            
+                            
+                            
                             ScreenshotsView(geo: geo, screenshots: viewModel.screenshots)
+                            
+                            Text(game.Desc)
+                                .padding()
                         }
                     }
                 }
