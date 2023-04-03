@@ -17,6 +17,10 @@ final class ApplicationFactory {
         return MainViewModel(networkService: networkService)
     }
     
+    var searchViewModel: any SearchViewModeProtocol {
+        return SearchViewModel(networkService: networkService)
+    }
+    
     
     init() {
         self.networkService = NetworkService()

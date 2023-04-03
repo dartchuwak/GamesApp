@@ -15,41 +15,70 @@ enum NetworkError: Error {
 
 
 protocol NetworkServiceProtocol {
-    func fetchGameDetails(with id:String) -> AnyPublisher<GameDetails, Error>
-    func fetchGameScreenshots(with id:String) -> AnyPublisher<ScreenshotsResponse, Error>
-    func searchGames(with name: String) ->  AnyPublisher<GamesResponse, Error>
+    func fetchDiscounts() -> AnyPublisher<GameDiscountsResponse, Error>
+    func fetchGameDetails(with id: String) -> AnyPublisher<GameInfo, Error>
+    func searchGame(with name: String) -> AnyPublisher<GameInfo, Error>
 }
 
 
 final class NetworkService: NetworkServiceProtocol {
-   
-    
-    func fetchGameDetails(with id:String) -> AnyPublisher<GameDetails, Error> {
-        let url = URL(string:"https://api.rawg.io/api/games/\(id)?key=74f86270fe5542fdaa2d8bef8c84bf15")!
+       
+    func fetchDiscounts() -> AnyPublisher<GameDiscountsResponse, Error> {
+        let urlString = "https://platprices.com/api.php?key=6Kk4norkUTfFEXyIVQEL9Q0ZGUugCkRg&sale=441"
+
+        guard let url = URL(string: urlString) else {
+            return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
+        }
         return URLSession.shared.dataTaskPublisher(for: url)
-            .map({$0.data})
-            .decode(type: GameDetails.self, decoder: JSONDecoder())
+            .map(\.data)
+            .decode(type: GameDiscountsResponse.self, decoder: JSONDecoder())
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
     }
     
-    func fetchGameScreenshots(with id:String) -> AnyPublisher<ScreenshotsResponse, Error> {
-        let url = URL(string:"https://api.rawg.io/api/games/\(id)/screenshots?key=74f86270fe5542fdaa2d8bef8c84bf15")!
+    func fetchGameDetails(with id: String) -> AnyPublisher<GameInfo, Error> {
+        let urlString = "https://platprices.com/api.php?key=6Kk4norkUTfFEXyIVQEL9Q0ZGUugCkRg&ppid=\(id)"
+
+        guard let url = URL(string: urlString) else {
+            return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
+        }
         return URLSession.shared.dataTaskPublisher(for: url)
-            .map({$0.data})
-            .decode(type: ScreenshotsResponse.self, decoder: JSONDecoder())
+            .map(\.data)
+            .decode(type: GameInfo.self, decoder: JSONDecoder())
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
     }
     
-    func searchGames(with name: String) -> AnyPublisher<GamesResponse, Error> {
-        let nameString = name.replacingOccurrences(of: " ", with: "%20")
-        let url = URL(string: "https://api.rawg.io/api/games?key=74f86270fe5542fdaa2d8bef8c84bf15&search=\(nameString)")!
+    func searchGame(with name: String) -> AnyPublisher<GameInfo, Error> {
+        let name = name.replacingOccurrences(of: " ", with: "%20")
+        let urlString = "https://platprices.com/api.php?key=6Kk4norkUTfFEXyIVQEL9Q0ZGUugCkRg&name=\(name)"
+
+        guard let url = URL(string: urlString) else {
+            return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
+        }
         return URLSession.shared.dataTaskPublisher(for: url)
-            .map({$0.data})
-            .decode(type: GamesResponse.self, decoder: JSONDecoder())
-            .receive(on: DispatchQueue.main )
+            .map(\.data)
+            //.debounce(for: .seconds(0.5), scheduler: DispatchQueue.main)
+            .decode(type: GameInfo.self, decoder: JSONDecoder())
+            .receive(on: DispatchQueue.main)
+            .eraseToAnyPublisher()
+    }
+    
+    func fetchDiscounts() -> AnyPublisher<DiscountsResponse, Error> {
+        let urlString = "https://platprices.com/api.php?key=6Kk4norkUTfFEXyIVQEL9Q0ZGUugCkRg&sales=1"
+
+        guard let url = URL(string: urlString) else {
+            return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
+        }
+        return URLSession.shared.dataTaskPublisher(for: url)
+            .map(\.data)
+            //.debounce(for: .seconds(0.5), scheduler: DispatchQueue.main)
+            .decode(type: DiscountsResponse.self, decoder: JSONDecoder())
+            .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
     }
     
 }
+
+
+

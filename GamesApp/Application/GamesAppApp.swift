@@ -10,7 +10,7 @@ import SwiftUI
 struct GamePriceApp: App {
     var body: some Scene {
         WindowGroup {
-            screenFactory.makeMainScreen()
+            screenFactory.makeTabViewScreen()
         }
     }
 }

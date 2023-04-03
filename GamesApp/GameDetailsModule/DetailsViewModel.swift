@@ -10,54 +10,67 @@ import Combine
 
 
 protocol DetailsViewModelProtocol: ObservableObject {
-    var gameDetails: GameDetails? { get set }
-    var id: Int { get set }
+    var game: GameInfo? { get set }
+    var id: String { get set }
     var networkService: NetworkServiceProtocol { get set }
-    func fetchGameDetails(with id: String)
-    func fetchGameScreenshots( with id: String)
+    
 }
 
 class DetailsViewModel: DetailsViewModelProtocol, ObservableObject {
     
-    @Published var gameDetails: GameDetails?
-    @Published var gameScreenshots: [Screenshot] = []
-    @Published var gameTrailer: URL?
-    @Published var id = 0
+    @Published var game: GameInfo?
+    @Published var screenshots: [Screenshot] = []
+    @Published var id = ""
     var networkService: NetworkServiceProtocol
     private var cancellables = Set<AnyCancellable>()
     
-    init (id: Int, networkService: NetworkServiceProtocol) {
+    var priceDifferenceInPercent: Double {
+        let basePrice = Double(game!.BasePrice)!
+        let salePrice = Double(game!.SalePrice)!
+           
+           let priceDifference = basePrice - salePrice
+           let percentageDifference = (priceDifference / basePrice) * 100
+
+           return percentageDifference
+       }
+    
+    init (id: String, networkService: NetworkServiceProtocol) {
         self.id = id
         self.networkService = networkService
-        fetchGameDetails(with: String(id))
-        fetchGameScreenshots(with: String(id))
-       // fetchTrailer(with: String(id))
+        searchGame(with: id)
+        //self.game = gameMock
+        self.configureScreenshots()
     }
     
-    func fetchGameDetails(with id: String) {
-        self.networkService.fetchGameDetails(with: id)
-            .sink { _ in
-            } receiveValue: { [weak self] response in
-                self?.gameDetails = response
-            }
+    
+    func searchGame(with id: String) {
+        networkService.fetchGameDetails(with: id)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    print(completion)
+                    print("Error: \(error.localizedDescription)")
+                }
+            }, receiveValue: { apiResponse in
+                self.game = apiResponse
+                self.configureScreenshots()
+            })
             .store(in: &cancellables)
     }
     
-    func fetchGameScreenshots(with id: String) {
-        self.networkService.fetchGameScreenshots(with: id)
-            .sink { _ in
-        } receiveValue: { [weak self] response in
-            self?.gameScreenshots = response.results
-        }
-        .store(in: &cancellables)
+    func configureScreenshots() {
+        guard let game = game else { return }
+        self.screenshots.append(Screenshot(id: UUID(), url: game.Screenshot1))
+        self.screenshots.append(Screenshot(id: UUID(), url: game.Screenshot2))
+        self.screenshots.append(Screenshot(id: UUID(), url: game.Screenshot3))
+        self.screenshots.append(Screenshot(id: UUID(), url: game.Screenshot4))
+        self.screenshots.append(Screenshot(id: UUID(), url: game.Screenshot5))
+        self.screenshots.append(Screenshot(id: UUID(), url: game.Screenshot6))
+        self.screenshots.append(Screenshot(id: UUID(), url: game.Screenshot7))
+        self.screenshots.append(Screenshot(id: UUID(), url: game.Screenshot8))
+        self.screenshots.append(Screenshot(id: UUID(), url: game.Screenshot9))
+        
     }
-    
-//    func fetchTrailer(with id: String) {
-//        self.networkService.fetchTrailer(with: id)
-//            .sink { _ in
-//        } receiveValue: { [weak self] response in
-//            self?.gameTrailer = URL(string: (response.results.first?.data.max)!)
-//        }
-//        .store(in: &cancellables)
-//    }
 }

@@ -12,7 +12,7 @@ import Combine
 
 protocol  MainViewModelProtocol: AnyObject, ObservableObject {
     var games: [Game] { get set }
-    func loadGames(with name: String)
+    func loadDiscounts()
     func clearGames()
 }
 
@@ -23,29 +23,31 @@ final class MainViewModel: MainViewModelProtocol {
     
     init (networkService: NetworkServiceProtocol) {
         self.networkService = networkService
-        loadGames(with: "Doom")
+        loadDiscounts()
     }
      
-    func loadGames(with name: String) {
-        Just(name)
-            .flatMap { [weak self] name -> AnyPublisher<GamesResponse, Error> in
-                guard let self = self else {
-                    return Empty().eraseToAnyPublisher()
+    
+    func loadDiscounts() {
+        networkService.fetchDiscounts()
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    print(completion)
+                    print("Error: \(error.localizedDescription)")
                 }
-                return self.networkService.searchGames(with: name)
-            }
-            .sink(
-                receiveCompletion: { _ in },
-                receiveValue: { [weak self] response in
-                    let games = response.results ?? []
-                    self?.games = games.sorted { $0.rating_top > $1.rating_top }
-                }
-            )
+            }, receiveValue: { apiResponse in
+                self.games = apiResponse.game_discounts
+                print("Used \(apiResponse.apiUsage) from \(apiResponse.apiLimit)")
+            })
             .store(in: &cancellables)
     }
-
-
     
+  
+ 
+    
+
     func clearGames() {
         games.removeAll()
     }
