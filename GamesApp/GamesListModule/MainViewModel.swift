@@ -7,47 +7,44 @@
 
 import Foundation
 import SwiftUI
-import Combine
+import IGDB_SWIFT_API
 
 
 protocol  MainViewModelProtocol: AnyObject, ObservableObject {
-    var games: [Game] { get set }
-    func loadDiscounts()
+    var games: [Proto_Game] { get set }
     func clearGames()
+    func fetchViaAmazonProxy()
 }
 
 final class MainViewModel: MainViewModelProtocol {
-    @Published var games: [Game] = []
-    private let networkService: NetworkServiceProtocol
-    private var cancellables = Set<AnyCancellable>()
+    @Published var games: [Proto_Game] = []
+
     
-    init (networkService: NetworkServiceProtocol) {
-        self.networkService = networkService
-        loadDiscounts()
+    init () {
+        fetchViaAmazonProxy()
     }
      
-    
-    func loadDiscounts() {
-        networkService.fetchDiscounts()
-            .sink(receiveCompletion: { completion in
-                switch completion {
-                case .finished:
-                    break
-                case .failure(let error):
-                    print(completion)
-                    print("Error: \(error.localizedDescription)")
-                }
-            }, receiveValue: { apiResponse in
-                self.games = apiResponse.game_discounts
-                print("Used \(apiResponse.apiUsage) from \(apiResponse.apiLimit)")
-            })
-            .store(in: &cancellables)
+    func fetchViaAmazonProxy() {
+        let wrapper: IGDBWrapper = IGDBWrapper(proxyURL: "https://ko3k6htpga.execute-api.us-west-2.amazonaws.com/production/v4", proxyHeaders: ["x-api-key": "ByQqc9u17uvEyvB56YwJa1aMYOPCqj75LPQme8jf"])
+        
+        let apicalypse = APICalypse()
+            .fields(fields: "cover.image_id, name, platforms, summary")
+            .where(query: "cover.image_id != null")
+            .where(query: "summary != null")
+            .where(query: "screenshots.url != null")
+            .limit(value: 20)
+        
+        wrapper.games(apiCalypse: apicalypse, result: { games in
+            DispatchQueue.main.async {
+                self.games = games
+            }
+                
+            
+        }) { error in
+            // Do something..
+        }
     }
     
-  
- 
-    
-
     func clearGames() {
         games.removeAll()
     }

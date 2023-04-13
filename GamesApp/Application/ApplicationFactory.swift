@@ -14,11 +14,11 @@ final class ApplicationFactory {
     let networkService: NetworkServiceProtocol
     
     var mainViewModel: any MainViewModelProtocol {
-        return MainViewModel(networkService: networkService)
+        return MainViewModel()
     }
     
     var searchViewModel: any SearchViewModeProtocol {
-        return SearchViewModel(networkService: networkService)
+        return SearchViewModel()
     }
     
     

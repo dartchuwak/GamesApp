@@ -6,71 +6,46 @@
 //
 
 import Foundation
-import Combine
+import IGDB_SWIFT_API
 
-
-protocol DetailsViewModelProtocol: ObservableObject {
-    var game: GameInfo? { get set }
-    var id: String { get set }
-    var networkService: NetworkServiceProtocol { get set }
-    
+protocol DetailsViewModelProtocol: AnyObject, ObservableObject {
+    var game: Proto_Game? { get set }
+    var id: UInt64 { get set }
+    var imageURL: String? { get }
 }
 
-class DetailsViewModel: DetailsViewModelProtocol, ObservableObject {
+class DetailsViewModel: DetailsViewModelProtocol {
     
-    @Published var game: GameInfo?
-    @Published var screenshots: [Screenshot] = []
-    @Published var id = ""
-    var networkService: NetworkServiceProtocol
-    private var cancellables = Set<AnyCancellable>()
+    @Published var game: Proto_Game?
+    @Published var id: UInt64
+    @Published var imageURL: String?
     
-    var priceDifferenceInPercent: Double {
-        let basePrice = Double(game!.BasePrice)!
-        let salePrice = Double(game!.SalePrice)!
-           
-           let priceDifference = basePrice - salePrice
-           let percentageDifference = (priceDifference / basePrice) * 100
-
-           return percentageDifference
-       }
     
-    init (id: String, networkService: NetworkServiceProtocol) {
+    var developer: String = ""
+    
+    init (id: UInt64) {
         self.id = id
-        self.networkService = networkService
-        searchGame(with: id)
-        //self.game = gameMock
-        self.configureScreenshots()
     }
     
     
-    func searchGame(with id: String) {
-        networkService.fetchGameDetails(with: id)
-            .sink(receiveCompletion: { completion in
-                switch completion {
-                case .finished:
-                    break
-                case .failure(let error):
-                    print(completion)
-                    print("Error: \(error.localizedDescription)")
-                }
-            }, receiveValue: { apiResponse in
-                self.game = apiResponse
-                self.configureScreenshots()
-            })
-            .store(in: &cancellables)
-    }
     
-    func configureScreenshots() {
-        guard let game = game else { return }
-        self.screenshots.append(Screenshot(id: UUID(), url: game.Screenshot1))
-        self.screenshots.append(Screenshot(id: UUID(), url: game.Screenshot2))
-        self.screenshots.append(Screenshot(id: UUID(), url: game.Screenshot3))
-        self.screenshots.append(Screenshot(id: UUID(), url: game.Screenshot4))
-        self.screenshots.append(Screenshot(id: UUID(), url: game.Screenshot5))
-        self.screenshots.append(Screenshot(id: UUID(), url: game.Screenshot6))
-        self.screenshots.append(Screenshot(id: UUID(), url: game.Screenshot7))
-        self.screenshots.append(Screenshot(id: UUID(), url: game.Screenshot8))
-        self.screenshots.append(Screenshot(id: UUID(), url: game.Screenshot9))
+    func fetchGame(with id: UInt64) {
         
+        let wrapper: IGDBWrapper = IGDBWrapper(proxyURL: "https://ko3k6htpga.execute-api.us-west-2.amazonaws.com/production/v4", proxyHeaders: ["x-api-key": "ByQqc9u17uvEyvB56YwJa1aMYOPCqj75LPQme8jf"])
+        
+        let apicalypse = APICalypse()
+            .fields(fields: "cover.image_id, name, platforms, summary, websites.url ,websites.category, rating, involved_companies.company.name, involved_companies.developer, artworks.image_id")
+            .where(query: "id = \(id)")
+        
+        wrapper.games(apiCalypse: apicalypse, result: { games in
+            DispatchQueue.main.async { [weak self] in
+                self?.game = games.first
+                let image_id = self?.game?.cover.imageID
+                self?.imageURL = imageBuilder(imageID: image_id ?? "", size: .FHD, imageType: .WEBP)
+            }
+        }) { error in
+            // Error handling
+            
+        }
     }
 }

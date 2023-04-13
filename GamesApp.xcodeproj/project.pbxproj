@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A346505A29DF55A400859936 /* IGDB-SWIFT-API in Frameworks */ = {isa = PBXBuildFile; productRef = A346505929DF55A400859936 /* IGDB-SWIFT-API */; };
 		A372C4A529DB071A0068AB79 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A372C4A429DB071A0068AB79 /* SearchView.swift */; };
 		A372C4A729DB072B0068AB79 /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A372C4A629DB072B0068AB79 /* SearchViewModel.swift */; };
 		A372C4A929DB55F50068AB79 /* game.json in Resources */ = {isa = PBXBuildFile; fileRef = A372C4A829DB55F50068AB79 /* game.json */; };
@@ -25,7 +26,6 @@
 		A3F1A70529D6337400F94F03 /* MainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F1A70429D6337400F94F03 /* MainViewModel.swift */; };
 		A3F1A70729D6339100F94F03 /* DetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F1A70629D6339100F94F03 /* DetailsView.swift */; };
 		A3F1A70929D633A800F94F03 /* DetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F1A70829D633A800F94F03 /* DetailsViewModel.swift */; };
-		A3F1A70B29D6341F00F94F03 /* MockData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F1A70A29D6341F00F94F03 /* MockData.swift */; };
 		A3F1A71229D6365400F94F03 /* data.json in Resources */ = {isa = PBXBuildFile; fileRef = A3F1A71129D6365400F94F03 /* data.json */; };
 /* End PBXBuildFile section */
 
@@ -49,7 +49,6 @@
 		A3F1A70429D6337400F94F03 /* MainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewModel.swift; sourceTree = "<group>"; };
 		A3F1A70629D6339100F94F03 /* DetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsView.swift; sourceTree = "<group>"; };
 		A3F1A70829D633A800F94F03 /* DetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsViewModel.swift; sourceTree = "<group>"; };
-		A3F1A70A29D6341F00F94F03 /* MockData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockData.swift; sourceTree = "<group>"; };
 		A3F1A71129D6365400F94F03 /* data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = data.json; sourceTree = "<group>"; };
 		A3F1A71329D636D700F94F03 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -59,6 +58,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A346505A29DF55A400859936 /* IGDB-SWIFT-API in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -111,8 +111,6 @@
 				A3F1A70C29D6346700F94F03 /* Application */,
 				A3E70C7529D6324000E80876 /* Preview Content */,
 				A3E70C7329D6324000E80876 /* Assets.xcassets */,
-				A3F1A71129D6365400F94F03 /* data.json */,
-				A372C4A829DB55F50068AB79 /* game.json */,
 			);
 			path = GamesApp;
 			sourceTree = "<group>";
@@ -120,6 +118,8 @@
 		A3E70C7529D6324000E80876 /* Preview Content */ = {
 			isa = PBXGroup;
 			children = (
+				A3F1A71129D6365400F94F03 /* data.json */,
+				A372C4A829DB55F50068AB79 /* game.json */,
 				A3E70C7629D6324000E80876 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
@@ -167,7 +167,6 @@
 			isa = PBXGroup;
 			children = (
 				A3F1A6FC29D6330A00F94F03 /* Game.swift */,
-				A3F1A70A29D6341F00F94F03 /* MockData.swift */,
 				A38A479629DB795700D17094 /* Discounts.swift */,
 			);
 			path = Model;
@@ -189,6 +188,9 @@
 			dependencies = (
 			);
 			name = GamesApp;
+			packageProductDependencies = (
+				A346505929DF55A400859936 /* IGDB-SWIFT-API */,
+			);
 			productName = GamesApp;
 			productReference = A3E70C6C29D6323F00E80876 /* GamesApp.app */;
 			productType = "com.apple.product-type.application";
@@ -217,6 +219,9 @@
 				Base,
 			);
 			mainGroup = A3E70C6329D6323F00E80876;
+			packageReferences = (
+				A346505829DF55A400859936 /* XCRemoteSwiftPackageReference "IGDB-API-SWIFT" */,
+			);
 			productRefGroup = A3E70C6D29D6323F00E80876 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -248,7 +253,6 @@
 				A3F1A6F729D6327A00F94F03 /* ApplicationFactory.swift in Sources */,
 				A3F1A6FF29D6332E00F94F03 /* GamesView.swift in Sources */,
 				A3F1A6FD29D6330A00F94F03 /* Game.swift in Sources */,
-				A3F1A70B29D6341F00F94F03 /* MockData.swift in Sources */,
 				A38A479529DB78BF00D17094 /* DiscountsView.swift in Sources */,
 				A3F1A70329D6335D00F94F03 /* CellViewModel.swift in Sources */,
 				A38A479729DB795700D17094 /* Discounts.swift in Sources */,
@@ -467,6 +471,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		A346505829DF55A400859936 /* XCRemoteSwiftPackageReference "IGDB-API-SWIFT" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/husnjak/IGDB-API-SWIFT.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.4.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A346505929DF55A400859936 /* IGDB-SWIFT-API */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A346505829DF55A400859936 /* XCRemoteSwiftPackageReference "IGDB-API-SWIFT" */;
+			productName = "IGDB-SWIFT-API";
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = A3E70C6429D6323F00E80876 /* Project object */;
 }

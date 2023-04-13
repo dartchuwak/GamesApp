@@ -6,23 +6,31 @@
 //
 
 import Foundation
+import IGDB_SWIFT_API
+import UIKit
+import SwiftUI
 
 
 class CellViewModel: ObservableObject {
     
-    var game: Game
+    var game: Proto_Game
+    var imageURL: String?
+    var coverData: UIImage?
     
-    var priceDifferenceInPercent: Double {
-        let basePrice = Double(game.BasePrice)!
-        let salePrice = Double(game.SalePrice)!
-           
-           let priceDifference = basePrice - salePrice
-           let percentageDifference = (priceDifference / basePrice) * 100
-
-           return percentageDifference
-       }
-    
-    init ( game: Game) {
+    init (game: Proto_Game) {
         self.game = game
+        let image_id = game.cover.imageID
+        imageURL = imageBuilder(imageID: image_id, size: .COVER_BIG, imageType: .PNG)
+        load()
     }
+    
+    
+    
+    func load() {
+        
+        URLSession.shared.dataTask(with: URL(string: imageURL!)!) { [weak self] data, response, error in
+            self?.coverData = UIImage(data: data!)!
+        }
+    }
+    
 }
