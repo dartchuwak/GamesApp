@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import IGDB_SWIFT_API
 
 
 struct MyCellView: View {
@@ -16,51 +17,35 @@ struct MyCellView: View {
     var body: some View {
         VStack (spacing: 10) {
             
-            AsyncImage(url: URL(string: viewModel.game.Img) ) { image in
+            AsyncImage(url: URL(string: viewModel.imageURL ?? "")) { image in
                 image.resizable()
                 
             } placeholder: {
                 
                 ProgressView()
-                    .frame(width: 150, height: 150)
+                    .frame(width: 132, height: 175)
                 
             }
-            .frame(width: 150)
-            .aspectRatio( 1.0, contentMode: .fit)
-            //  .scaledToFit()
+            .aspectRatio(contentMode: .fit)
+            .frame(width: 132)
+           
             
-            .clipped()
-            .cornerRadius(15)
-            HStack{
-                Text("-\(viewModel.priceDifferenceInPercent, specifier: "%.0f")%")
-                    .padding(4)
-                    .background(Color.black)
-                    .foregroundColor(.white)
-                    .cornerRadius(5)
-                    .font(.subheadline)
-                
-                Spacer()
-            }
-            
-            
-            HStack {
-                Text(viewModel.game.formattedSalePrice)
-                Text(viewModel.game.formattedBasePrice)
-                    .strikethrough()
-                    .foregroundColor(.gray)
-                Spacer()
-            }
-            
+
+           .cornerRadius(15)
         }
+        .aspectRatio(contentMode: .fit)
         
-        .frame(width: 150)
-        
-    }
-    
+      //  .cornerRadius(15)
+}
+
 }
 
 struct MyCellView_Previews: PreviewProvider {
+    
+    let vm = MainViewModel()
+
+    
     static var previews: some View {
-        MyCellView( viewModel:CellViewModel( game: gameResponseMock.game_discounts[13]))
+        MyCellView( viewModel:CellViewModel( game: Proto_Game()))
     }
 }

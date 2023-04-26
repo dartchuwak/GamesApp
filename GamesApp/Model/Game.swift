@@ -124,4 +124,45 @@ struct Screenshot: Identifiable, Hashable {
 
 
 
+enum Websites {
+    case tab
+//    wikia    2
+//    wikipedia    3
+//    facebook    4
+//    twitter    5
+//    twitch    6
+//    instagram    8
+//    youtube    9
+//    iphone    10
+//    ipad    11
+//    android    12
+//    steam    13
+//    reddit    14
+//    itch    15
+//    epicgames    16
+//    gog    17
+//    discord    18
+}
 
+
+enum Website: Int, CustomStringConvertible, CaseIterable {
+    case steam = 13
+    case xboxone = 49
+    case nswitch = 130
+    
+    var description: String {
+        switch self {
+        case .steam: return "Steam"
+        case .xboxone: return "Xbox One"
+        case .nswitch: return "Nintendo Switch"
+        }
+    }
+    
+    var assetName: String {
+        switch self {
+        case .steam: return "Steam"
+        case .xboxone: return "xbox"
+        case .nswitch: return "switch"
+        }
+    }
+}

@@ -31,11 +31,6 @@ final class ScreenFactory {
     
     func makeTabViewScreen() -> some View {
          TabView {
-             makeDiscountsScreen()
-                 .tabItem {
-                     Image(systemName: "percent")
-                     Text("Скидки")
-                 }
              
              makeGamesScreen()
                  .tabItem {
@@ -45,8 +40,8 @@ final class ScreenFactory {
              
              makeSearchScreen()
                  .tabItem {
-                     Image(systemName: "star.fill")
-                     Text("Favorites")
+                     Image(systemName: "magnifyingglass")
+                     Text("Поиск")
                  }
          }
      }

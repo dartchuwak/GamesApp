@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import IGDB_SWIFT_API
 
 enum NetworkError: Error {
     case invalidURL
@@ -57,8 +58,8 @@ final class NetworkService: NetworkServiceProtocol {
             return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
         }
         return URLSession.shared.dataTaskPublisher(for: url)
+            .debounce(for: .seconds(2), scheduler: RunLoop.main)
             .map(\.data)
-            //.debounce(for: .seconds(0.5), scheduler: DispatchQueue.main)
             .decode(type: GameInfo.self, decoder: JSONDecoder())
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
@@ -72,12 +73,10 @@ final class NetworkService: NetworkServiceProtocol {
         }
         return URLSession.shared.dataTaskPublisher(for: url)
             .map(\.data)
-            //.debounce(for: .seconds(0.5), scheduler: DispatchQueue.main)
             .decode(type: DiscountsResponse.self, decoder: JSONDecoder())
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
     }
-    
 }
 
 
