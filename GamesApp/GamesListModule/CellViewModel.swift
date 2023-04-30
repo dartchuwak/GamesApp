@@ -27,7 +27,6 @@ class CellViewModel: ObservableObject {
     
     
     func load() {
-        
         URLSession.shared.dataTask(with: URL(string: imageURL!)!) { [weak self] data, response, error in
             self?.coverData = UIImage(data: data!)!
         }

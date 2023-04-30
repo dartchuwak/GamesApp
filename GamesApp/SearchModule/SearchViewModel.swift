@@ -31,8 +31,6 @@ final class SearchViewModel: SearchViewModeProtocol, ObservableObject {
         let apicalypse = APICalypse()
             .fields(fields: "cover.image_id, name, platforms, summary, name")
             .where(query: "cover.image_id != null")
-            .where(query: "summary != null")
-            .where(query: "screenshots.url != null")
             .search(searchQuery: name)
             .limit(value: 20)
         
@@ -45,6 +43,10 @@ final class SearchViewModel: SearchViewModeProtocol, ObservableObject {
             // Error handling
             
         }
+    }
+    
+    func clearGames() {
+        games?.removeAll()
     }
     
 }
