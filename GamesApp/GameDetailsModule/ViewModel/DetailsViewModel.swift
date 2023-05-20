@@ -8,23 +8,15 @@
 import Foundation
 import IGDB_SWIFT_API
 
-protocol DetailsViewModelProtocol: AnyObject, ObservableObject {
-    var game: Proto_Game? { get set }
-    var id: UInt64 { get set }
-    var imageURL: String? { get }
-    //var developer: String { get }
-}
-
-class DetailsViewModel: DetailsViewModelProtocol {
+class DetailsViewModel: ObservableObject {
     
-    @Published var game: Proto_Game?
     var id: UInt64
+    @Published var game: Proto_Game?
     @Published var imageURL: String?
     @Published var screenshots: [URL] = []
         
     init (id: UInt64) {
         self.id = id
-      //  fetchGame(with: id)
     }
     
     func getDeveloper() -> String {
@@ -54,13 +46,16 @@ class DetailsViewModel: DetailsViewModelProtocol {
                 guard let game = games.first else { print("error"); return }
                 self.game = game
                 let imageId = game.cover.imageID
-                self.imageURL = imageBuilder(imageID: imageId, size: .FHD, imageType: .WEBP)
+                self.imageURL = imageBuilder(imageID: imageId, size: .FHD, imageType: .PNG)
                 fetchScreenshots()
             }
         }) { error in
             // Error handling
             
         }
+    }
+    
+    deinit {
     }
     
     func fetchScreenshots() {

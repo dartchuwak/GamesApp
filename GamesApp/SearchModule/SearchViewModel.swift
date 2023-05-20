@@ -9,21 +9,12 @@ import Foundation
 import Combine
 import IGDB_SWIFT_API
 
-protocol SearchViewModeProtocol: ObservableObject {
-    func searchGames(with name: String)
-    var games: [Proto_Game]? { get }
-}
 
-final class SearchViewModel: SearchViewModeProtocol, ObservableObject {
+final class SearchViewModel: ObservableObject {
     
     
     @Published var games: [Proto_Game]?
    
-  
-    
-   
-    
-    
     func searchGames(with name: String) {
         
         let wrapper: IGDBWrapper = IGDBWrapper(proxyURL: "https://ko3k6htpga.execute-api.us-west-2.amazonaws.com/production/v4", proxyHeaders: ["x-api-key": "ByQqc9u17uvEyvB56YwJa1aMYOPCqj75LPQme8jf"])

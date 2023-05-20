@@ -9,25 +9,25 @@ import Foundation
 import SwiftUI
 
 
-let screenFactory = ScreenFactory()
-
 final class ScreenFactory {
     
+    static let instance = ScreenFactory()
+    
     fileprivate let applicationFactory = ApplicationFactory()
-    fileprivate init() {
-    }
+    fileprivate init() {}
     
     func makeGamesScreen() -> GamesView {
-        return GamesView(viewModel: applicationFactory.mainViewModel as! MainViewModel)
+        return GamesView()
     }
     
     func makeSearchScreen() -> SearchView {
-        return SearchView(viewModel: applicationFactory.searchViewModel as! SearchViewModel)
+        return SearchView(viewModel: applicationFactory.searchViewModel)
     }
     
-    func makeDiscountsScreen() -> DiscountsView {
-        return DiscountsView()
+    func makeFavScreen() -> FavoritesView {
+        return FavoritesView()
     }
+    
     
     func makeTabViewScreen() -> some View {
          TabView {
@@ -41,8 +41,19 @@ final class ScreenFactory {
              makeSearchScreen()
                  .tabItem {
                      Image(systemName: "magnifyingglass")
-                     Text("Поиск")
+                     Text("Search")
                  }
+             
+             makeFavScreen()
+                 .tabItem {
+                     Image(systemName: "star.fill")
+                     Text("Favorites")
+                 }
+             
+             
+         }
+         .onAppear {
+             print ("TabView Appeared")
          }
      }
     

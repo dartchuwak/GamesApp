@@ -10,21 +10,19 @@ import SwiftUI
 import IGDB_SWIFT_API
 
 
-protocol  MainViewModelProtocol: AnyObject, ObservableObject {
-    var games: [Proto_Game] { get set }
-    func clearGames()
-    func fetchViaAmazonProxy()
-}
 
-final class MainViewModel: MainViewModelProtocol {
+
+final class ViewModel: ObservableObject {
+    
     @Published var games: [Proto_Game] = []
+    @Published var favoriteGames: [UInt64] = []
 
     
     init () {
-        fetchViaAmazonProxy()
+        //fetchGames()
     }
-     
-    func fetchViaAmazonProxy() {
+    
+    func fetchGames() {
         let wrapper: IGDBWrapper = IGDBWrapper(proxyURL: "https://ko3k6htpga.execute-api.us-west-2.amazonaws.com/production/v4", proxyHeaders: ["x-api-key": "ByQqc9u17uvEyvB56YwJa1aMYOPCqj75LPQme8jf"])
         
         let apicalypse = APICalypse()
@@ -51,5 +49,14 @@ final class MainViewModel: MainViewModelProtocol {
     
     func clearGames() {
         games.removeAll()
+    }
+    
+    func addToFavorites(id: UInt64) {
+        if favoriteGames.contains(id){
+            favoriteGames.removeAll(where: { $0 == id})
+        } else {
+            favoriteGames.append(id)
+        }
+        
     }
 }

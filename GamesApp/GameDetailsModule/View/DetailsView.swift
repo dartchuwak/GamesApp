@@ -12,16 +12,17 @@ import IGDB_SWIFT_API
 
 struct DetailsView: View {
     
-    @ObservedObject var viewModel: DetailsViewModel
+    @ObservedObject var detailsViewModel: DetailsViewModel
+    @EnvironmentObject var viewmodel: ViewModel
     
     var body: some View {
         
-        if let game = viewModel.game {
+        if let game = detailsViewModel.game {
             GeometryReader { geo in
                 ScrollView(.vertical) {
                     VStack(alignment: .leading) {
                         ZStack {
-                            AsyncImage(url: URL(string: viewModel.imageURL ?? "")) { image in
+                            AsyncImage(url: URL(string: detailsViewModel.imageURL ?? "")) { image in
                                 image.resizable()
                             } placeholder: {
                                 ProgressView()
@@ -34,7 +35,7 @@ struct DetailsView: View {
                                 Spacer()
                                 HStack {
                                     Spacer()
-                                    Text(viewModel.getRating())
+                                    Text(detailsViewModel.getRating())
                                         .foregroundColor(.red)
                                         .fontWeight(.heavy)
                                         .font(.largeTitle)
@@ -48,17 +49,26 @@ struct DetailsView: View {
                             .font(.title)
                             .fontWeight(.bold)
                         VStack {
-                            Text(viewModel.getDeveloper())
+                            Text(detailsViewModel.getDeveloper())
                                 .padding(.horizontal)
                                 .font(.system(.subheadline))
                                 .italic()
                                 .fontWeight(.thin)
                         }
+                        
+                        Image(systemName: "heart")
+                            .padding(.horizontal)
+                            .onTapGesture {
+                                viewmodel.addToFavorites(id: detailsViewModel.id)
+                                print (viewmodel.favoriteGames)
+                                
+                            }
+                        
                         Text(game.summary)
                             .padding()
                         
                         TabView {
-                            ForEach (viewModel.screenshots , id:\.self) { image in
+                            ForEach (detailsViewModel.screenshots , id:\.self) { image in
                                 AsyncImage(url: image) { image in
                                     image.resizable()
                                         .scaledToFit()
@@ -77,12 +87,13 @@ struct DetailsView: View {
         } else {
             GeometryReader { geo in
                 HStack (spacing: 12) {
-                    Text("Загрузка")
+                    Text("Loading")
                     ProgressView()
                         .navigationBarTitleDisplayMode(.inline)
                 }
-                .onAppear{
-                    viewModel.fetchGame(with: viewModel.id)
+                .onAppear {
+                    print("DetailsView Appeared")
+                    detailsViewModel.fetchGame(with: detailsViewModel.id)
                 }
                 .frame(width: geo.size.width, height: geo.size.height)
                 .position(x: geo.size.width * 0.5, y: geo.size.height * 0.5)
@@ -95,7 +106,7 @@ struct DetailsView_Previews: PreviewProvider {
     
     static let vm = DetailsViewModel(id: 1942)
     static var previews: some View {
-        DetailsView(viewModel: vm)
+        DetailsView(detailsViewModel: vm)
             .onAppear {
                 vm.fetchGame(with: 1942)
             }

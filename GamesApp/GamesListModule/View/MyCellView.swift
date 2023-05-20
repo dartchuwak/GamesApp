@@ -21,29 +21,22 @@ struct MyCellView: View {
                 image.resizable()
                 
             } placeholder: {
-                
                 ProgressView()
                     .frame(width: 132, height: 175)
                 
             }
             .aspectRatio(contentMode: .fit)
             .frame(width: 132)
-           
-            
-
-           .cornerRadius(15)
+            .cornerRadius(15)
         }
         .aspectRatio(contentMode: .fit)
-        
-      //  .cornerRadius(15)
-}
-
+    }
 }
 
 struct MyCellView_Previews: PreviewProvider {
     
-    let vm = MainViewModel()
-
+    static let vm = ViewModel()
+    
     
     static var previews: some View {
         MyCellView( viewModel:CellViewModel( game: Proto_Game()))
