@@ -7,51 +7,59 @@
 
 import Foundation
 import SwiftUI
-import IGDB_SWIFT_API
 
 
 
 
 final class ViewModel: ObservableObject {
     
-    @Published var games: [Proto_Game] = []
-    @Published var favoriteGames: [UInt64] = []
-
+    let networkService: NetworkService
     
-    init () {
-        //fetchGames()
+    @Published var games: [Game] = []
+    @Published var newGames: [Game] = []
+    @Published var favoriteGames: [String] = []
+    
+    
+    init (networkService: NetworkService) {
+        self.networkService = networkService
+        fetchGames()
+        fetchNewGames()
     }
     
     func fetchGames() {
-        let wrapper: IGDBWrapper = IGDBWrapper(proxyURL: "https://ko3k6htpga.execute-api.us-west-2.amazonaws.com/production/v4", proxyHeaders: ["x-api-key": "ByQqc9u17uvEyvB56YwJa1aMYOPCqj75LPQme8jf"])
-        
-        let apicalypse = APICalypse()
-            .fields(fields: "cover.image_id, name, rating")
-            .where(query: "cover.image_id != null")
-           // .where(query: "summary != null")
-            //.where(query: "screenshots.url != null")
-            .limit(value: 60)
-            .sort(field: "rating", order: .DESCENDING)
-        
-        wrapper.games(apiCalypse: apicalypse, result: { games in
-            DispatchQueue.main.async {
-                self.games = games
+        Task {
+            let result = await networkService.fetchGames()
+            switch result {
+            case .success(let resonse):
+                DispatchQueue.main.async {
+                    self.games = resonse.results
+                }
+            case .failure(let error):
+                print (error)
             }
-            
-            
-                
-            
-        }) { error in
-            // Do something..
         }
+    }
+    
+    func fetchNewGames() {
         
+        Task {
+            let result = await networkService.fetchNewGames()
+            switch result {
+            case .success(let resonse):
+                DispatchQueue.main.async {
+                    self.newGames = resonse.results
+                }
+            case .failure(let error):
+                print (error)
+            }
+        }
     }
     
     func clearGames() {
         games.removeAll()
     }
     
-    func addToFavorites(id: UInt64) {
+    func addToFavorites(id: String) {
         if favoriteGames.contains(id){
             favoriteGames.removeAll(where: { $0 == id})
         } else {
@@ -59,4 +67,6 @@ final class ViewModel: ObservableObject {
         }
         
     }
+    
+
 }

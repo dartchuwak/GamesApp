@@ -17,11 +17,13 @@ struct FavoritesView: View {
                 Text(id.description)
             }
         }
+        .background(Color(white: 0.10))
     }
 }
 
 struct FavoritesView_Previews: PreviewProvider {
     static var previews: some View {
         FavoritesView()
+            .environmentObject(ViewModel(networkService: NetworkService()))
     }
 }

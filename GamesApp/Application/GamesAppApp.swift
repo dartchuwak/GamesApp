@@ -8,13 +8,14 @@ import SwiftUI
 
 @main
 struct GamePriceApp: App {
-    
-    @StateObject var vm = ViewModel()
+
+    let applicationFactory = ApplicationFactory()
     
     var body: some Scene {
         WindowGroup {
-            ScreenFactory.instance.makeTabViewScreen()
-                .environmentObject(vm)
+            HomeView()
+                .environmentObject(applicationFactory.mainViewModel)
+               
         }
     }
     

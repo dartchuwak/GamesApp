@@ -7,13 +7,13 @@
 
 import Foundation
 import SwiftUI
-import IGDB_SWIFT_API
 
 
 struct DetailsView: View {
     
-    @ObservedObject var detailsViewModel: DetailsViewModel
+    @StateObject var detailsViewModel: DetailsViewModel
     @EnvironmentObject var viewmodel: ViewModel
+    @State var isFavorite: Bool = false
     
     var body: some View {
         
@@ -22,7 +22,7 @@ struct DetailsView: View {
                 ScrollView(.vertical) {
                     VStack(alignment: .leading) {
                         ZStack {
-                            AsyncImage(url: URL(string: detailsViewModel.imageURL ?? "")) { image in
+                            AsyncImage(url: URL(string: game.background_image ?? "")) { image in
                                 image.resizable()
                             } placeholder: {
                                 ProgressView()
@@ -30,57 +30,22 @@ struct DetailsView: View {
                             }
                             .aspectRatio(contentMode: .fit)
                             .frame(width: geo.size.width)
-                            
-                            VStack {
-                                Spacer()
-                                HStack {
-                                    Spacer()
-                                    Text(detailsViewModel.getRating())
-                                        .foregroundColor(.red)
-                                        .fontWeight(.heavy)
-                                        .font(.largeTitle)
-                                        .padding()
-                                }
-                            }
                         }
                         
                         Text(game.name)
                             .padding(.horizontal)
                             .font(.title)
-                            .fontWeight(.bold)
-                        VStack {
-                            Text(detailsViewModel.getDeveloper())
-                                .padding(.horizontal)
-                                .font(.system(.subheadline))
-                                .italic()
-                                .fontWeight(.thin)
-                        }
+                            .fontWeight(.heavy)
                         
-                        Image(systemName: "heart")
+                        Text("About")
+                            .font(.title)
                             .padding(.horizontal)
-                            .onTapGesture {
-                                viewmodel.addToFavorites(id: detailsViewModel.id)
-                                print (viewmodel.favoriteGames)
-                                
-                            }
-                        
-                        Text(game.summary)
-                            .padding()
-                        
-                        TabView {
-                            ForEach (detailsViewModel.screenshots , id:\.self) { image in
-                                AsyncImage(url: image) { image in
-                                    image.resizable()
-                                        .scaledToFit()
-                                } placeholder: {
-                                    ProgressView()
-                                }
-                                .frame(width: geo.size.width)
-                            }
-                            
+                        ScrollView {
+                            Text(game.description_raw ?? "")
                         }
-                        .tabViewStyle(PageTabViewStyle())
-                        .frame(width: geo.size.width, height: 211)
+                        .frame(height: 300)
+                        .padding(.horizontal)
+                        
                     }
                 }
             }
@@ -92,7 +57,6 @@ struct DetailsView: View {
                         .navigationBarTitleDisplayMode(.inline)
                 }
                 .onAppear {
-                    print("DetailsView Appeared")
                     detailsViewModel.fetchGame(with: detailsViewModel.id)
                 }
                 .frame(width: geo.size.width, height: geo.size.height)
@@ -104,11 +68,11 @@ struct DetailsView: View {
 
 struct DetailsView_Previews: PreviewProvider {
     
-    static let vm = DetailsViewModel(id: 1942)
+    static let vm = DetailsViewModel(id: 2454)
     static var previews: some View {
         DetailsView(detailsViewModel: vm)
-            .onAppear {
-                vm.fetchGame(with: 1942)
+            .onAppear{
+                vm.fetchGame(with: 2454)
             }
     }
 }
