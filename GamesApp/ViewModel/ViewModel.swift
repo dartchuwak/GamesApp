@@ -23,7 +23,7 @@ final class ViewModel: ObservableObject {
     init (networkService: NetworkService) {
         self.networkService = networkService
         fetchGames()
-        fetchNewGames()
+      //  fetchNewGames()
     }
     
     func fetchGames() {

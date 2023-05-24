@@ -9,21 +9,33 @@ import SwiftUI
 
 struct HomeView: View  {
     
+    @State private var selectedView: SideMenuViewModel = .newAndTrending
     @State private var isShowing = false
     
     var body: some View {
         NavigationView {
             ZStack {
-                if isShowing {
-                    SideMenuView()
+                switch selectedView {
+                case .newAndTrending:
+                    NewAndTrandingView()
+                case .last30Days:
+                    Last30DaysView()
+                case .nextWeek:
+                    NextWeekView()
+                case .releaseCalendar:
+                    ReleaseCalendarView()
+                case .thisWeek:
+                    ThisWeekView()
                 }
-                GamesView()
-                    .offset(x: isShowing ? 250:0, y: 0)
+                
+                SideMenuView(selectedView: $selectedView, isShowing: $isShowing)
+                    .offset(x: isShowing ? 0:-UIScreen.main.bounds.width, y: 0)
+                
+                EmptyView()
                     .navigationBarItems(leading: Button(action: {
-                        withAnimation(.spring()) {
+                        withAnimation(.easeInOut(duration:0.8)) {
                             isShowing.toggle()
                         }
-                        
                     }, label: {
                         Image(systemName: "list.bullet")
                             .foregroundColor(.black)
@@ -32,6 +44,9 @@ struct HomeView: View  {
         }
     }
 }
+
+
+
 
 struct HomeView_Previews: PreviewProvider {
     

@@ -16,8 +16,8 @@ final class ScreenFactory {
     fileprivate let applicationFactory = ApplicationFactory()
     fileprivate init() {}
     
-    func makeGamesScreen() -> GamesView {
-        return GamesView()
+    func makeGamesScreen() -> NewAndTrandingView {
+        return NewAndTrandingView()
     }
     
     func makeFavScreen() -> FavoritesView {

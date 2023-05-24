@@ -10,20 +10,14 @@ import SwiftUI
 struct SideMenuHeaderView: View {
     var body: some View {
         VStack(alignment: .leading) {
-            Image(systemName: "circle.fill")
+            Image("rawg_icon")
                 .resizable()
                 .frame(width: 64,height: 64)
                 .foregroundColor(.yellow)
+                .clipped()
+                .clipShape(Circle())
                 .padding(.bottom, 16)
-            
-            
-            Text("RAWG.IO")
-                .font(.system(size: 24, weight: .semibold))
-            Text("58M games")
-                .font(.system(size: 16))
-            
             HStack {
-                Text("Tone of games")
                 Spacer()
             }
         }
