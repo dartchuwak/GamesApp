@@ -13,6 +13,8 @@ struct FilterView: View {
     @Binding var selectedOrder: SortOrders
     @Binding var selectedPlatform: FilterPlatforms
     @EnvironmentObject var vm: ViewModel
+    
+    @State var forView: ViewsEnum
     var body: some View {
             HStack {
                 HStack(spacing: 0) {
@@ -25,17 +27,16 @@ struct FilterView: View {
                                     .frame(width: 16, height: 16)
                                 Text(option.ordersTitle)
                                     .accentColor(Color.white)
-                             
                             }
                         }
-
                     }
                     .accentColor(Color.white)
                     .pickerStyle(.menu)
                     .onChange(of: selectedOrder) { option in
-                        vm.handleSelectionChange(option: option)
+                        vm.handleSelectionChange(option: option, forView: forView)
+                        vm.clearGames(forView: forView)
+                        vm.isLoading = true
                     }
-
                 }
                 .padding(.horizontal, 4)
                 .background(Color.init(white: 0.20))
@@ -52,6 +53,7 @@ struct FilterView: View {
                     .pickerStyle(.menu)
                     .onChange(of: selectedPlatform) { option in
                         print("Platform changed: \(option)")
+                        vm.isLoading = true
                     }
                     .accentColor(Color.white)
                 }
@@ -68,10 +70,11 @@ struct FilterView: View {
 struct FilterView_Previews: PreviewProvider {
     @State static var selectedOrder: SortOrders = .popularity
     @State static var selectedPlatform: FilterPlatforms = .pc
+    @State static var isLoading: Bool = true
     @StateObject static var viewModel = ViewModel(networkService: NetworkService())
 
     static var previews: some View {
-        FilterView(selectedOrder: $selectedOrder, selectedPlatform: $selectedPlatform)
+        FilterView(selectedOrder: $selectedOrder, selectedPlatform: $selectedPlatform, forView: .newAndTrending)
             .environmentObject(viewModel)
     }
 }

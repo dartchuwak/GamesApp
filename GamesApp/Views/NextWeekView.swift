@@ -13,6 +13,8 @@ struct NextWeekView: View {
     
     @EnvironmentObject var vm: ViewModel
     @Environment(\.colorScheme) var colorScheme
+    @State var selectedOrder = SortOrders.popularity
+    @State var selectedPlatform = FilterPlatforms.pc
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -20,6 +22,8 @@ struct NextWeekView: View {
                 .font(.title)
                 .fontWeight(.heavy)
                 .padding(.horizontal)
+            
+            FilterView(selectedOrder: $selectedOrder, selectedPlatform: $selectedPlatform, forView: .nextWeekGames)
             ScrollView(.vertical) {
                 LazyVStack(spacing: 10) {
                     ForEach(vm.nextWeekGames, id: \.self) { game in

@@ -14,22 +14,42 @@ struct DetailsView: View {
     @StateObject var detailsViewModel: DetailsViewModel
     @EnvironmentObject var viewmodel: ViewModel
     @State var isFavorite: Bool = false
+    @State private var isLoaded: Bool = false
     
     var body: some View {
         
         if let game = detailsViewModel.game {
+            
             GeometryReader { geo in
                 ScrollView(.vertical) {
                     VStack(alignment: .leading) {
                         ZStack {
-                            AsyncImage(url: URL(string: game.background_image ?? "")) { image in
-                                image.resizable()
-                            } placeholder: {
-                                ProgressView()
-                                    .frame(height: 400)
-                            }
+                            AsyncImage(url: URL(string: game.background_image ?? "")) { phase in
+                                       switch phase {
+                                       case .empty:
+                                           ProgressView()
+                                               .frame(height: 400)
+                                       case .success(let image):
+                                           image
+                                               .resizable()
+
+                                               .onAppear {
+                                                   print("----> in onappear ")
+                                                   withAnimation (.easeOut(duration: 0.2)){
+                                                       isLoaded = true
+                                                   }
+                                               }
+                                       case .failure(_):
+                                           Image(systemName: "exclamationmark.icloud")
+                                               .resizable()
+                                               .scaledToFit()
+                                       @unknown default:
+                                           Image(systemName: "exclamationmark.icloud")
+                                       }
+                                   }
                             .aspectRatio(contentMode: .fit)
-                            .frame(width: geo.size.width)
+                                                   .frame(width: geo.size.width)
+                            
                         }
                         
                         Text(game.name)
@@ -40,21 +60,31 @@ struct DetailsView: View {
                         Text("About")
                             .font(.title)
                             .padding(.horizontal)
-                        ScrollView {
-                            Text(game.description_raw ?? "")
-                        }
-                        .frame(height: 300)
-                        .padding(.horizontal)
                         
+                            Text(game.description_raw ?? "")
+                                  .padding(.horizontal)
+                                  .lineLimit(5)
+                                  .overlay {
+                                      LinearGradient(colors: [Color.clear, Color.white], startPoint: .top, endPoint: .bottom)
+                                  }
+                        NavigationLink {
+                            ScrollView {
+                                Text(detailsViewModel.getDescription(text: game.description))
+                            }
+                        } label: {
+                            Text("Show more")
+                                .accentColor(Color.purple)
+                                .padding(.horizontal)
+                                .fontWeight(.semibold)
+                        }
                     }
                 }
+                .opacity(isLoaded ? 1 : 0)
             }
         } else {
             GeometryReader { geo in
                 HStack (spacing: 12) {
-                    Text("Loading")
-                    ProgressView()
-                        .navigationBarTitleDisplayMode(.inline)
+                    CircleColors()
                 }
                 .onAppear {
                     detailsViewModel.fetchGame(with: detailsViewModel.id)

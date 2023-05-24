@@ -12,12 +12,7 @@ struct FavoritesView: View {
     @EnvironmentObject var viewModel: ViewModel
 
     var body: some View {
-        List {
-            ForEach (viewModel.favoriteGames, id: \.self) { id in
-                Text(id.description)
-            }
-        }
-        .background(Color(white: 0.10))
+        Text("Favorites")
     }
 }
 

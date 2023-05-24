@@ -13,6 +13,7 @@ struct Last30DaysView: View {
     @Environment(\.colorScheme) var colorScheme
     @State var selectedOrder: SortOrders = .popularity
     @State var selectedPlatform: FilterPlatforms = .pc
+    @State var isLoading: Bool = true
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -21,7 +22,7 @@ struct Last30DaysView: View {
                 .fontWeight(.heavy)
                 .padding(.horizontal)
             
-            FilterView(selectedOrder: $selectedOrder, selectedPlatform: $selectedPlatform)
+            FilterView(selectedOrder: $selectedOrder, selectedPlatform: $selectedPlatform, forView: .last30Days)
             
             ScrollView(.vertical) {
                 LazyVStack(spacing: 10) {

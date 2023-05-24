@@ -12,6 +12,8 @@ class DetailsViewModel: ObservableObject {
     let networkService: NetworkService
     var id: Int
     @Published var game: GameDetails?
+    
+    
         
     init (id: Int, networkService: NetworkService) {
         self.networkService = networkService
@@ -31,5 +33,9 @@ class DetailsViewModel: ObservableObject {
                 print (error)
             }
         }
+    }
+    
+    func getDescription( text: String) -> String {
+        return text.htmlAttributedString() ?? ""
     }
 }

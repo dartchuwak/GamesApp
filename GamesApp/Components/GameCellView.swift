@@ -12,6 +12,7 @@ import SwiftUI
 struct GameCellView: View {
     
     @ObservedObject var viewModel: GameCellViewModel
+    @State var isLoading: Bool = true
     
     var body: some View {
         
@@ -21,8 +22,8 @@ struct GameCellView: View {
                     image.resizable()
                     
                 } placeholder: {
-                    ProgressView()
-                        .frame(width: geo.size.width, height: geo.size.width/2)
+                    CircleColors()
+                        //.frame(width: geo.size.width, height: geo.size.width/2)
                     
                 }
                 .aspectRatio(contentMode: .fill)

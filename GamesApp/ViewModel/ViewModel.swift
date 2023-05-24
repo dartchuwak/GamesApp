@@ -18,8 +18,8 @@ final class ViewModel: ObservableObject {
     @Published var games: [Game] = []
     @Published var last30DaysGames: [Game] = []
     @Published var nextWeekGames: [Game] = []
-    @Published var favoriteGames: [String] = []
     @Published var top250: [Game] = []
+    var isLoading: Bool = true
     
     var sortOption: String = ""
     
@@ -35,6 +35,7 @@ final class ViewModel: ObservableObject {
             case .success(let resonse):
                 DispatchQueue.main.async {
                     self.games = resonse.results
+                    self.isLoading = false
                 }
             case .failure(let error):
                 print (error)
@@ -51,6 +52,7 @@ final class ViewModel: ObservableObject {
             case .success(let resonse):
                 DispatchQueue.main.async {
                     self.last30DaysGames = resonse.results
+                    
                 }
             case .failure(let error):
                 print (error)
@@ -62,7 +64,7 @@ final class ViewModel: ObservableObject {
         
         let dates = getDatesForNewGames(from: Date(), value: 1, period: .weekOfMonth)
         Task {
-            let result = await networkService.fetchGames(with: "https://api.rawg.io/api/games?key=74f86270fe5542fdaa2d8bef8c84bf15&dates=\(dates)")
+            let result = await networkService.fetchGames(with: "https://api.rawg.io/api/games?key=74f86270fe5542fdaa2d8bef8c84bf15&dates=\(dates)&ordering=\(sortOption)")
             switch result {
             case .success(let resonse):
                 DispatchQueue.main.async {
@@ -76,7 +78,7 @@ final class ViewModel: ObservableObject {
     
     func fetchTopGamesInYear() {
         Task {
-            let result = await networkService.fetchGames(with: "https://api.rawg.io/api/games?key=74f86270fe5542fdaa2d8bef8c84bf15&dates=2001-01-01,2001-12-31&ordering=-rating")
+            let result = await networkService.fetchGames(with: "https://api.rawg.io/api/games?key=74f86270fe5542fdaa2d8bef8c84bf15&dates=2001-01-01,2001-12-31&ordering=\(sortOption)")
             switch result {
             case .success(let resonse):
                 DispatchQueue.main.async {
@@ -86,12 +88,12 @@ final class ViewModel: ObservableObject {
                 print (error)
             }
         }
-   
+        
     }
     
     func fetchTop250Games() {
         Task {
-            let result = await networkService.fetchGames(with: "https://api.rawg.io/api/games?key=74f86270fe5542fdaa2d8bef8c84bf15&ordering=-rating&dates=1970-01-01,2022-12-31&page_size=250")
+            let result = await networkService.fetchGames(with: "https://api.rawg.io/api/games?key=74f86270fe5542fdaa2d8bef8c84bf15&ordering=\(sortOption)&dates=1970-01-01,2022-12-31&page_size=250")
             switch result {
             case .success(let resonse):
                 DispatchQueue.main.async {
@@ -101,15 +103,28 @@ final class ViewModel: ObservableObject {
                 print (error)
             }
         }
-   
+        
     }
     
-    func handleSelectionChange(option: SortOrders) {
-        print("Selected Option: \(option.ordersQuerry)")
+    func handleSelectionChange(option: SortOrders, forView: ViewsEnum ) {
+       // print("DEBUG -- Selected Option: \(option.ordersQuerry)")
         sortOption = option.ordersQuerry
-        fetchNewAndTrandingGames()
-        fetchLast30DaysGames()
-      }
+        switch forView {
+        case .newAndTrending:
+            fetchNewAndTrandingGames()
+        case .last30Days:
+            fetchLast30DaysGames()
+        case .nextWeekGames:
+            fetchNextWeekGames()
+        case .thisWeekGames:
+            print("thisWeekGames")
+        case .top250:
+            fetchTop250Games()
+        }
+        
+
+        
+    }
     
     
     
@@ -144,20 +159,25 @@ final class ViewModel: ObservableObject {
         return querryString
     }
     
-    func clearGames() {
-        games.removeAll()
-    }
-    
-    func addToFavorites(id: String) {
-        if favoriteGames.contains(id){
-            favoriteGames.removeAll(where: { $0 == id})
-        } else {
-            favoriteGames.append(id)
+    func clearGames(forView: ViewsEnum) {
+        switch forView {
+        case .newAndTrending:
+            games.removeAll()
+        case .last30Days:
+            last30DaysGames.removeAll()
+        case .nextWeekGames:
+            nextWeekGames.removeAll()
+        case .thisWeekGames:
+            games.removeAll() // Fix
+        case .top250:
+            top250.removeAll()
         }
+        
         
     }
     
-
+    
+    
 }
 
 enum SortOrders: String, CaseIterable {
@@ -215,7 +235,7 @@ enum SortOrders: String, CaseIterable {
 }
 
 enum FilterPlatforms: String, CaseIterable {
-case pc
+    case pc
     case ps
     
     var platformsTitles: String {
@@ -231,4 +251,12 @@ case pc
         case .ps: return "ps"
         }
     }
+}
+
+enum ViewsEnum: String, CaseIterable {
+    case newAndTrending
+    case last30Days
+    case nextWeekGames
+    case thisWeekGames
+    case top250
 }

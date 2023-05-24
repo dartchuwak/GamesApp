@@ -19,10 +19,9 @@ class GameCellViewModel: ObservableObject {
         dateFormatterGet.dateFormat = "yyyy-MM-dd"
 
         let dateFormatterPrint = DateFormatter()
-        dateFormatterPrint.dateFormat = "MMM dd, yyyy"
+        dateFormatterPrint.dateFormat = "dd.MM.yyyy"
 
         if let date = dateFormatterGet.date(from: initialDateStr) {
-            print(dateFormatterPrint.string(from: date))
             return dateFormatterPrint.string(from: date)
         }
         return "TBA"
