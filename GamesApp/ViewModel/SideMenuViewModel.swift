@@ -10,47 +10,40 @@ import SwiftUI
 
 
 enum SideMenuViewModel: Int, CaseIterable {
+    case newAndTrending
     case last30Days
     case thisWeek
     case nextWeek
     case releaseCalendar
-    case newAndTrending
+    case bestOfTheYear
+    case popularInLastYear
+    case allTime250
     
-    var titile: String {
+    var titleForNewReleases: String {
         switch self {
         case .last30Days: return "Last 30 days"
-        case .nextWeek: return "Next week"
+        case .nextWeek: return "Next Week"
         case .thisWeek: return "This Week"
         case .releaseCalendar: return "Release Calendar"
-        case .newAndTrending: return "newAndTrending"
+        case .newAndTrending: return "New And Tranding"
+        case .bestOfTheYear: return "Best of the year"
+        case .popularInLastYear: return "Popular in 2022"
+        case .allTime250: return "All time 250"
         }
     }
     
-    var image: String {
+    var imageForNewReleases: String {
         switch self {
         case .last30Days: return "star.fill"
         case .nextWeek: return "flame"
         case .thisWeek: return "arrowshape.right.fill"
         case .releaseCalendar: return "31.circle"
-        case .newAndTrending: return "31.circle"
+        case .newAndTrending: return "house.fill"
+        case .bestOfTheYear: return "star.fill"
+        case .popularInLastYear: return "chart.bar.xaxis"
+        case .allTime250: return "crown.fill"
         }
     }
-    
-    var destinationView: some View {
-          switch self {
-          case .last30Days:
-              return AnyView(Last30DaysView())
-          case .nextWeek:
-              return AnyView(NextWeekView())
-          case .thisWeek:
-              return AnyView(ThisWeekView())
-          case .releaseCalendar:
-              return AnyView(ReleaseCalendarView())
-              
-          case .newAndTrending:
-              return AnyView(NewAndTrandingView())
-          }
-      }
 }
 
 class SideMenuController: ObservableObject {

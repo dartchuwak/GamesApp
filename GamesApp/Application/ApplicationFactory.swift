@@ -17,6 +17,7 @@ final class ApplicationFactory {
         return ViewModel(networkService: networkService)
     }
     
+    
     init() {
         self.networkService = NetworkService()
     }

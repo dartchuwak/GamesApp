@@ -9,19 +9,20 @@ struct GamesResponse: Decodable, Hashable {
 struct Game: Decodable, Hashable, Identifiable {
     let id: Int
     let name: String
-    let released: String
+    let released: String?
     let metacritic: Int?
-    let background_image: String
+    let background_image: String?
     let rating: Double
     let rating_top: Int
+    let suggestions_count: Int
 }
 
 struct GameDetails: Decodable, Hashable, Identifiable {
     let id: Int
     let name: String
     let description: String
-    let metacritic: Int
-    let released: String
+    let metacritic: Int?
+    let released: String?
     let background_image: String?
     let backgroundImageAdditional: String?
     let website: String?
@@ -52,5 +53,6 @@ let mockGame = Game(id: 3498,
                     metacritic: 92,
                     background_image: "https://media.rawg.io/media/games/c4b/c4b0cab189e73432de3a250d8cf1c84e.jpg",
                     rating: 4.92,
-                    rating_top: 5)
+                    rating_top: 5,
+                    suggestions_count: 200)
 

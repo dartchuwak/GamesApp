@@ -17,7 +17,7 @@ struct GameCellView: View {
         
         GeometryReader { geo in
             VStack(alignment: .leading, spacing: 0)  {
-                AsyncImage(url: URL(string: viewModel.game.background_image)) { image in
+                AsyncImage(url: URL(string: viewModel.game.background_image ?? "")) { image in
                     image.resizable()
                     
                 } placeholder: {
@@ -26,7 +26,7 @@ struct GameCellView: View {
                     
                 }
                 .aspectRatio(contentMode: .fill)
-                .frame(width: geo.size.width, height: geo.size.width/2)
+                .frame(width: geo.size.width, height: geo.size.width*2/3)
                 .clipped()
                 
                 VStack(alignment: .leading) {
@@ -39,9 +39,11 @@ struct GameCellView: View {
                     Spacer()
                     Text("Ganres: Action")
                         .foregroundColor(.white)
-                    Text("Metascore: \(viewModel.game.metacritic ?? 0)")
-                        .foregroundColor(.white)
-                    Text("Release date: \(viewModel.game.released)")
+                    if let score = viewModel.game.metacritic {
+                        Text("Metascore: \(score)")
+                            .foregroundColor(.white)
+                    }
+                    Text("Release date: \(viewModel.releaseDate)")
                         .foregroundColor(.white)
                 }
                 .padding()

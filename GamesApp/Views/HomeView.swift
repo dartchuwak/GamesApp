@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct HomeView: View  {
-    
+    @Environment(\.colorScheme) var colorScheme
     @State private var selectedView: SideMenuViewModel = .newAndTrending
     @State private var isShowing = false
     
@@ -26,6 +26,12 @@ struct HomeView: View  {
                     ReleaseCalendarView()
                 case .thisWeek:
                     ThisWeekView()
+                case .bestOfTheYear:
+                    NewAndTrandingView()
+                case .popularInLastYear:
+                    NewAndTrandingView()
+                case .allTime250:
+                    Top250View()
                 }
                 
                 SideMenuView(selectedView: $selectedView, isShowing: $isShowing)
@@ -38,7 +44,8 @@ struct HomeView: View  {
                         }
                     }, label: {
                         Image(systemName: "list.bullet")
-                            .foregroundColor(.black)
+                            .foregroundColor(colorScheme == .dark ? Color.white : Color.black)
+                        
                     }))
             }
         }

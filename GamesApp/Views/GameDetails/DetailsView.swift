@@ -68,7 +68,7 @@ struct DetailsView: View {
 
 struct DetailsView_Previews: PreviewProvider {
     
-    static let vm = DetailsViewModel(id: 2454)
+    static let vm = DetailsViewModel(id: 2454, networkService: NetworkService())
     static var previews: some View {
         DetailsView(detailsViewModel: vm)
             .onAppear{

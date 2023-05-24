@@ -10,6 +10,9 @@ import SwiftUI
 struct Last30DaysView: View {
     
     @EnvironmentObject var vm: ViewModel
+    @Environment(\.colorScheme) var colorScheme
+    @State var selectedOrder: SortOrders = .popularity
+    @State var selectedPlatform: FilterPlatforms = .pc
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -17,11 +20,14 @@ struct Last30DaysView: View {
                 .font(.title)
                 .fontWeight(.heavy)
                 .padding(.horizontal)
+            
+            FilterView(selectedOrder: $selectedOrder, selectedPlatform: $selectedPlatform)
+            
             ScrollView(.vertical) {
                 LazyVStack(spacing: 10) {
-                    ForEach(vm.newGames, id: \.self) { game in
+                    ForEach(vm.last30DaysGames, id: \.self) { game in
                         NavigationLink(destination: {
-                            DetailsView(detailsViewModel: DetailsViewModel(id: game.id))
+                            DetailsView(detailsViewModel: DetailsViewModel(id: game.id, networkService: vm.networkService))
                         }, label: {
                             GameCellView(viewModel: GameCellViewModel(game: game))
                                 .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
@@ -31,9 +37,9 @@ struct Last30DaysView: View {
             }
         }
         .navigationBarBackButtonHidden()
-        .background(Color.yellow)
+        .background(colorScheme == .dark ? Color.black : Color.white)
         .onAppear {
-            vm.fetchNewGames()
+            vm.fetchLast30DaysGames()
         }
     }
 }
@@ -41,5 +47,6 @@ struct Last30DaysView: View {
 struct Last30DaysView_Previews: PreviewProvider {
     static var previews: some View {
         Last30DaysView()
+            .environmentObject(ViewModel(networkService: NetworkService()))
     }
 }

@@ -23,15 +23,30 @@ struct SideMenuView: View {
                         .font(.title)
                         .fontWeight(.bold)
                         .padding(.horizontal)
-                    ForEach(SideMenuViewModel.allCases, id: \.self) { item in
-                        RowView(image: item.image , text: item.titile)
+                    ForEach(SideMenuViewModel.allCases.prefix(5), id: \.self) { item in
+                        RowView(image: item.imageForNewReleases , text: item.titleForNewReleases)
                             .padding(.horizontal)
                             .foregroundColor(.black)
                             .onTapGesture {
                                 selectedView = item
                                 withAnimation(.spring()) {
                                     isShowing.toggle()
-                                    print("Menu")
+                                }
+                            }
+                    }
+                    
+                    Text("Top")
+                        .font(.title)
+                        .fontWeight(.bold)
+                        .padding(.horizontal)
+                    ForEach(SideMenuViewModel.allCases.suffix(3), id: \.self) { item in
+                        RowView(image: item.imageForNewReleases , text: item.titleForNewReleases)
+                            .padding(.horizontal)
+                            .foregroundColor(.black)
+                            .onTapGesture {
+                                selectedView = item
+                                withAnimation(.spring()) {
+                                    isShowing.toggle()
                                 }
                             }
                     }
