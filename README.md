@@ -8,3 +8,5 @@
 <img src="https://github.com/dartchuwak/GamesApp/assets/109591126/5307a0a6-b5b4-4c4f-b26c-0c03a4247e76).png" width=20% height=20%>
 </div>
 
+SwiftUI + MVVM + Async/await URLSession
+
