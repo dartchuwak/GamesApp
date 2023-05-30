@@ -22,11 +22,11 @@ struct Last30DaysView: View {
                 .fontWeight(.heavy)
                 .padding(.horizontal)
             
-            FilterView(selectedOrder: $selectedOrder, selectedPlatform: $selectedPlatform, forView: .last30Days)
+            FilterView(selectedOrder: $selectedOrder, selectedPlatform: $selectedPlatform, view: .last30Days)
             
             ScrollView(.vertical) {
                 LazyVStack(spacing: 10) {
-                    ForEach(vm.last30DaysGames, id: \.self) { game in
+                    ForEach(vm.allGames, id: \.self) { game in
                         NavigationLink(destination: {
                             DetailsView(detailsViewModel: DetailsViewModel(id: game.id, networkService: vm.networkService))
                         }, label: {

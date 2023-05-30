@@ -17,24 +17,29 @@ struct NewAndTrandingView: View {
                 .padding(.horizontal)
                 .foregroundColor(colorScheme == .dark ? Color.white : Color.black)
             
-            FilterView(selectedOrder: $selectedOrder, selectedPlatform: $selectedPlatform, forView: .newAndTrending)
+            FilterView(selectedOrder: $selectedOrder, selectedPlatform: $selectedPlatform, view: .newAndTrending)
             
             
             ZStack {
                 ScrollView(.vertical) {
                     LazyVStack(spacing: 10) {
-                        ForEach(vm.games, id: \.self) { game in
+                        ForEach(vm.allGames, id: \.self) { game in
                             NavigationLink(destination: {
                                 DetailsView(detailsViewModel: DetailsViewModel(id: game.id, networkService: vm.networkService))
                             }, label: {
                                 GameCellView(viewModel: GameCellViewModel(game: game))
                                     .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                                    .onAppear {
+                                        if game == vm.games.last {
+                                            vm.fetchNewAndTrandingGames()
+                                        }
+                                    }
                             })
                         }
                     }
                 }
                 if vm.isLoading {
-                  CircleColors()
+                    CircleColors()
                 }
             }
         }
@@ -43,7 +48,7 @@ struct NewAndTrandingView: View {
         .onAppear {
             vm.fetchNewAndTrandingGames()
         }
-
+        
     }
 }
 

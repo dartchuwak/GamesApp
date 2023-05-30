@@ -19,22 +19,39 @@ final class ViewModel: ObservableObject {
     @Published var last30DaysGames: [Game] = []
     @Published var nextWeekGames: [Game] = []
     @Published var top250: [Game] = []
+    @Published var allGames: [Game] = []
     var isLoading: Bool = true
-    
+    var page: String = "1"
     var sortOption: String = ""
+    var dates = ""
     
     
     init (networkService: NetworkService) {
         self.networkService = networkService
     }
     
+    
+    private func getPageNumber(from url: String) {
+        if let url = URL(string: url),
+           let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+           let queryItems = components.queryItems,
+           let pageItem = queryItems.first(where: { $0.name == "page" }) {
+            self.page = pageItem.value ?? ""
+            print("page=\(pageItem.value ?? "")")
+        } else {
+            print("Unable to parse URL or find page parameter")
+        }
+    }
+    
+    
     func fetchNewAndTrandingGames() {
         Task {
-            let result = await networkService.fetchGames(with: "https://api.rawg.io/api/games?key=74f86270fe5542fdaa2d8bef8c84bf15&ordering=\(sortOption)")
+            let result = await networkService.fetchGames(with: "https://api.rawg.io/api/games?key=74f86270fe5542fdaa2d8bef8c84bf15&date=\(dates)&ordering=\(sortOption)&page=\(page)&page_size=5")
             switch result {
             case .success(let resonse):
                 DispatchQueue.main.async {
-                    self.games = resonse.results
+                    self.getPageNumber(from: resonse.next)
+                    self.allGames.append(contentsOf: resonse.results)
                     self.isLoading = false
                 }
             case .failure(let error):
@@ -43,16 +60,17 @@ final class ViewModel: ObservableObject {
         }
     }
     
+    
     func fetchLast30DaysGames() {
-        
-        let dates = getDatesForNewGames(from: Date(), value: -1, period: .month)
+        dates = getDatesForNewGames(from: Date(), value: -1, period: .month)
         Task {
-            let result = await networkService.fetchGames(with: "https://api.rawg.io/api/games?key=74f86270fe5542fdaa2d8bef8c84bf15&dates=\(dates)&ordering=\(sortOption)")
+            let result = await networkService.fetchGames(with: "https://api.rawg.io/api/games?key=74f86270fe5542fdaa2d8bef8c84bf15&dates=\(dates)&ordering=\(sortOption)&page=\(page)&page_size=5")
             switch result {
             case .success(let resonse):
                 DispatchQueue.main.async {
-                    self.last30DaysGames = resonse.results
-                    
+                    self.getPageNumber(from: resonse.next)
+                    self.allGames.append(contentsOf: resonse.results)
+                    self.isLoading = false
                 }
             case .failure(let error):
                 print (error)
@@ -61,10 +79,9 @@ final class ViewModel: ObservableObject {
     }
     
     func fetchNextWeekGames() {
-        
-        let dates = getDatesForNewGames(from: Date(), value: 1, period: .weekOfMonth)
+        dates = getDatesForNewGames(from: Date(), value: 1, period: .weekOfMonth)
         Task {
-            let result = await networkService.fetchGames(with: "https://api.rawg.io/api/games?key=74f86270fe5542fdaa2d8bef8c84bf15&dates=\(dates)&ordering=\(sortOption)")
+            let result = await networkService.fetchGames(with: "https://api.rawg.io/api/games?key=74f86270fe5542fdaa2d8bef8c84bf15&dates=\(dates)&ordering=\(sortOption)&page=\(page)&page_size=5")
             switch result {
             case .success(let resonse):
                 DispatchQueue.main.async {
@@ -76,7 +93,8 @@ final class ViewModel: ObservableObject {
         }
     }
     
-    func fetchTopGamesInYear() {
+    
+    func fetchTopGamesOfTheYear() {
         Task {
             let result = await networkService.fetchGames(with: "https://api.rawg.io/api/games?key=74f86270fe5542fdaa2d8bef8c84bf15&dates=2001-01-01,2001-12-31&ordering=\(sortOption)")
             switch result {
@@ -106,10 +124,11 @@ final class ViewModel: ObservableObject {
         
     }
     
-    func handleSelectionChange(option: SortOrders, forView: ViewsEnum ) {
-       // print("DEBUG -- Selected Option: \(option.ordersQuerry)")
+    func handleSelectionChange(option: SortOrders, view: ViewsEnum ) {
+        
+        page = "1"
         sortOption = option.ordersQuerry
-        switch forView {
+        switch view {
         case .newAndTrending:
             fetchNewAndTrandingGames()
         case .last30Days:
@@ -122,10 +141,18 @@ final class ViewModel: ObservableObject {
             fetchTop250Games()
         }
         
-
+        
         
     }
     
+    func setDefaultQuerry(page: Bool, sorting: Bool) {
+        if page == true {
+            self.page = "1"
+        }
+        if sorting == true {
+            sortOption = ""
+        }
+    }
     
     
     private func getDatesForNewGames(from: Date, value: Int, period: Calendar.Component) -> String {
@@ -162,9 +189,9 @@ final class ViewModel: ObservableObject {
     func clearGames(forView: ViewsEnum) {
         switch forView {
         case .newAndTrending:
-            games.removeAll()
+            allGames.removeAll()
         case .last30Days:
-            last30DaysGames.removeAll()
+            allGames.removeAll()
         case .nextWeekGames:
             nextWeekGames.removeAll()
         case .thisWeekGames:

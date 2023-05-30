@@ -65,6 +65,6 @@ struct CircleColors: View {
 struct CircleColors_Previews: PreviewProvider {
     static var previews: some View {
         CircleColors()
-            .preferredColorScheme(.light)
+            .preferredColorScheme(.dark)
     }
 }

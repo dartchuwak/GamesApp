@@ -13,8 +13,7 @@ struct FilterView: View {
     @Binding var selectedOrder: SortOrders
     @Binding var selectedPlatform: FilterPlatforms
     @EnvironmentObject var vm: ViewModel
-    
-    @State var forView: ViewsEnum
+    @State var view: ViewsEnum
     var body: some View {
             HStack {
                 HStack(spacing: 0) {
@@ -32,12 +31,15 @@ struct FilterView: View {
                     }
                     .accentColor(Color.white)
                     .pickerStyle(.menu)
+                    
                     .onChange(of: selectedOrder) { option in
-                        vm.handleSelectionChange(option: option, forView: forView)
-                        vm.clearGames(forView: forView)
+                      //  vm.setDefaultQuerry(page: true, sorting: false)
+                        vm.handleSelectionChange(option: option, view: view)
+                        vm.clearGames(forView: view)
                         vm.isLoading = true
                     }
                 }
+                
                 .padding(.horizontal, 4)
                 .background(Color.init(white: 0.20))
                 .cornerRadius(5)
@@ -63,7 +65,8 @@ struct FilterView: View {
                 
                 Spacer()
                 
-            }.padding(.horizontal)
+            }
+            .padding(.horizontal, 8)
         }
 }
 
@@ -74,7 +77,7 @@ struct FilterView_Previews: PreviewProvider {
     @StateObject static var viewModel = ViewModel(networkService: NetworkService())
 
     static var previews: some View {
-        FilterView(selectedOrder: $selectedOrder, selectedPlatform: $selectedPlatform, forView: .newAndTrending)
+        FilterView(selectedOrder: $selectedOrder, selectedPlatform: $selectedPlatform, view: .newAndTrending)
             .environmentObject(viewModel)
     }
 }

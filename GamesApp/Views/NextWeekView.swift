@@ -23,7 +23,7 @@ struct NextWeekView: View {
                 .fontWeight(.heavy)
                 .padding(.horizontal)
             
-            FilterView(selectedOrder: $selectedOrder, selectedPlatform: $selectedPlatform, forView: .nextWeekGames)
+            FilterView(selectedOrder: $selectedOrder, selectedPlatform: $selectedPlatform, view: .nextWeekGames)
             ScrollView(.vertical) {
                 LazyVStack(spacing: 10) {
                     ForEach(vm.nextWeekGames, id: \.self) { game in

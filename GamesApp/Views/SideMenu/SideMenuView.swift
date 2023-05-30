@@ -11,6 +11,7 @@ struct SideMenuView: View {
     
     @Binding var selectedView: SideMenuViewModel
     @Binding var isShowing: Bool
+    @EnvironmentObject var vm: ViewModel
     
     var body: some View {
         GeometryReader { geometry in
@@ -28,7 +29,10 @@ struct SideMenuView: View {
                             .padding(.horizontal)
                             .foregroundColor(.black)
                             .onTapGesture {
+                                vm.allGames.removeAll()
+                                vm.setDefaultQuerry(page: true, sorting: true)
                                 selectedView = item
+                                
                                 withAnimation(.spring()) {
                                     isShowing.toggle()
                                 }

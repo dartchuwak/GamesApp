@@ -26,9 +26,9 @@ enum SideMenuViewModel: Int, CaseIterable {
         case .thisWeek: return "This Week"
         case .releaseCalendar: return "Release Calendar"
         case .newAndTrending: return "New And Tranding"
-        case .bestOfTheYear: return "Best of the year"
+        case .bestOfTheYear: return "Best of The Year"
         case .popularInLastYear: return "Popular in 2022"
-        case .allTime250: return "All time 250"
+        case .allTime250: return "All Time 250"
         }
     }
     
@@ -46,7 +46,4 @@ enum SideMenuViewModel: Int, CaseIterable {
     }
 }
 
-class SideMenuController: ObservableObject {
-    @Published var isShowing = false
-}
 
