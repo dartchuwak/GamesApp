@@ -9,42 +9,18 @@ import Foundation
 import SwiftUI
 
 
-let screenFactory = ScreenFactory()
-
 final class ScreenFactory {
     
+    static let instance = ScreenFactory()
+    
     fileprivate let applicationFactory = ApplicationFactory()
-    fileprivate init() {
+    fileprivate init() {}
+    
+    func makeGamesScreen() -> NewAndTrandingView {
+        return NewAndTrandingView()
     }
     
-    func makeGamesScreen() -> GamesView {
-        return GamesView(viewModel: applicationFactory.mainViewModel as! MainViewModel)
+    func makeFavScreen() -> FavoritesView {
+        return FavoritesView()
     }
-    
-    func makeSearchScreen() -> SearchView {
-        return SearchView(viewModel: applicationFactory.searchViewModel as! SearchViewModel)
-    }
-    
-    func makeDiscountsScreen() -> DiscountsView {
-        return DiscountsView()
-    }
-    
-    func makeTabViewScreen() -> some View {
-         TabView {
-             
-             makeGamesScreen()
-                 .tabItem {
-                     Image(systemName: "house.fill")
-                     Text("Home")
-                 }
-             
-             makeSearchScreen()
-                 .tabItem {
-                     Image(systemName: "magnifyingglass")
-                     Text("Поиск")
-                 }
-         }
-     }
-    
-    
 }

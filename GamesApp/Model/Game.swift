@@ -1,168 +1,80 @@
-//
-//  Character.swift
-//  GamePrice
-//
-//  Created by Evgenii Mikhailov on 13.03.2023.
-//
-
 import Foundation
-import SwiftUI
 
 
-// MARK: - DiscountsResponse
-struct GameDiscountsResponse: Hashable,  Decodable {
-    let SaleName: String?
-    let SaleTime: String?
-    let SaleEnd: String?
-    let ImgURL: String
-    let Region: String
-    let game_discounts: [Game]
-    //  let dlcDiscounts: [DLC]
-    let error: Int
-    let errorDesc: String
-    let apiLimit: String
-    let apiUsage: String
-}
-
-// MARK: - DlcDiscount
-struct DLC: Hashable,  Decodable {
-    let PPID: String
-    let Name: String
-    let Img: String
-    let BasePrice: String
-    let SalePrice: String
-    let PlusPrice: String
-    let ParentGame: String
-    let FormattedBasePrice: String
-    let FormattedSalePrice: String
-    let FormattedPlusPrice: String
-    let PlatPricesURL: String
-}
-
-// MARK: - GameDiscount
-struct Game: Hashable, Decodable, Identifiable {
-    var id: Int?
-    let PPID: String
-    let Name: String
-    let Img: String
-    let OpenCriticID: String
-    let Difficulty: String
-    let IsPS4: String
-    let IsPS5: String
-    let LastDiscounted: String
-    let DiscountedUntil: String
-    let BasePrice: String
-    let SalePrice: String
-    let PlusPrice: String
-    let formattedBasePrice: String
-    let formattedSalePrice: String
-    let formattedPlusPrice: String
-    let PlatPricesURL: String
-}
-
-struct GameInfo: Decodable {
-    let GameName: String
-    let GameID: String
-    let Desc: String
-    let Img: String
-    let CoverArt: String
-    let LogoImg: String
-    let Screenshot1: String
-    let Screenshot2: String
-    let Screenshot3: String
-    let Screenshot4: String
-    let Screenshot5: String
-    let Screenshot6: String
-    let Screenshot7: String
-    let Screenshot8: String
-    let Screenshot9: String
-    let PreviewVideo: String
-    let Publisher: String
-    let Developer: String
-    let IsPS4: String
-    let IsPS5: String
-    let IsVR: String
-    let BasePrice: String
-    let PlusPrice: String
-    let SalePrice: String
-    let LowestEverPrice: String
-    let LowestEverPlusPrice: String
-    let DiscPerc: String
-    let ReleaseDate: String
-    let LastDiscounted: String
-    let DiscountedUntil: String
-    let PSPExPremUntil: String
-    let PSPExtra: String
-    let PSPPremium: String
-    let PSNID: String
-    let ProductName: String
-    let PPID: String
-    let Rating: String
-    let formattedBasePrice: String
-    let formattedSalePrice: String
-    let formattedPlusPrice: String
-    let PSStoreURL: String
-    let PlatPricesURL: String
-    let error: Int
-    let errorDesc: String
-    let apiLimit: String
-    let apiUsage: String
-    let PSPlusNeeded: String
-    let OnlinePlay: String
-    let OfflinePlayers: String
-    let OnlinePlayers: String
-    
-}
-
-struct Screenshot: Identifiable, Hashable {
-    let id: UUID
-    let url: String
+struct GamesResponse: Decodable, Hashable {
+    let next: String
+    let results: [Game]
 }
 
 
-
-
-
-
-enum Websites {
-    case tab
-//    wikia    2
-//    wikipedia    3
-//    facebook    4
-//    twitter    5
-//    twitch    6
-//    instagram    8
-//    youtube    9
-//    iphone    10
-//    ipad    11
-//    android    12
-//    steam    13
-//    reddit    14
-//    itch    15
-//    epicgames    16
-//    gog    17
-//    discord    18
+struct Game: Decodable, Hashable, Identifiable {
+    let id: Int
+    let name: String
+    let released: String?
+    let metacritic: Int?
+    let background_image: String?
+    let rating: Double
+    let rating_top: Int
+    let suggestions_count: Int
+    let platforms: [Platform]?
 }
 
-
-enum Website: Int, CustomStringConvertible, CaseIterable {
-    case steam = 13
-    case xboxone = 49
-    case nswitch = 130
-    
-    var description: String {
-        switch self {
-        case .steam: return "Steam"
-        case .xboxone: return "Xbox One"
-        case .nswitch: return "Nintendo Switch"
-        }
-    }
-    
-    var assetName: String {
-        switch self {
-        case .steam: return "Steam"
-        case .xboxone: return "xbox"
-        case .nswitch: return "switch"
-        }
-    }
+struct Platform: Decodable, Hashable {
+    let platform: PlatformItem?
+    let released_at: String?
+    let requirements: Requirement?
 }
+
+struct PlatformItem: Decodable, Hashable {
+    let id: Int
+    let slug: String
+    let name: String
+}
+
+struct Requirement: Decodable, Hashable {
+    let minimum: String?
+    let recommended: String?
+}
+
+struct GameDetails: Decodable, Hashable, Identifiable {
+    let id: Int
+    let name: String
+    let description: String
+    let metacritic: Int?
+    let released: String?
+    let background_image: String?
+    let backgroundImageAdditional: String?
+    let website: String?
+    let rating: Double
+    let rating_top: Int
+    let saturatedColor, dominantColor: String?
+    let description_raw: String?
+    let platforms: [Platform]
+}
+
+let mockGameDetails = GameDetails(id: 3498,
+                                  name: "GTA",
+                                  description: "Desc",
+                                  metacritic: 92,
+                                  released: "1990",
+                                  background_image: "https://media.rawg.io/media/games/c4b/c4b0cab189e73432de3a250d8cf1c84e.jpg",
+                                  backgroundImageAdditional: "https://media.rawg.io/media/games/c4b/c4b0cab189e73432de3a250d8cf1c84e.jpg",
+                                  website: "https://bethesda.net/game/doom",
+                                  rating: 4.92,
+                                  rating_top: 5,
+                                  saturatedColor: "",
+                                  dominantColor: "",
+                                  description_raw: "",
+                                  platforms: [Platform(platform: PlatformItem(id: 1, slug: "PC", name: "PlayStation 5"), released_at: "2020", requirements: Requirement(minimum: "min", recommended: "rec"))])
+
+
+let mockGame = Game(id: 3498,
+                    name: "Doom",
+                    released: "2017",
+                    metacritic: 92,
+                    background_image: "https://media.rawg.io/media/games/c4b/c4b0cab189e73432de3a250d8cf1c84e.jpg",
+                    rating: 4.92,
+                    rating_top: 5,
+                    suggestions_count: 200,
+                    platforms: [Platform(platform: PlatformItem(id: 1, slug: "PC", name: "PlayStation 5"), released_at: "2020", requirements: Requirement(minimum: "min", recommended: "rec"))])
+

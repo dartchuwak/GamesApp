@@ -11,14 +11,10 @@ import Foundation
 final class ApplicationFactory {
     
     
-    let networkService: NetworkServiceProtocol
+    let networkService: NetworkService
     
-    var mainViewModel: any MainViewModelProtocol {
-        return MainViewModel()
-    }
-    
-    var searchViewModel: any SearchViewModeProtocol {
-        return SearchViewModel()
+    var mainViewModel: ViewModel {
+        return ViewModel(networkService: networkService)
     }
     
     

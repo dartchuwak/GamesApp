@@ -6,76 +6,53 @@
 //
 
 import Foundation
-import Combine
-import IGDB_SWIFT_API
 
 enum NetworkError: Error {
     case invalidURL
     case emptyResponse
+    case urlSessionError(Error)
+    case decodingError(Error)
 }
 
 
 protocol NetworkServiceProtocol {
-    func fetchDiscounts() -> AnyPublisher<GameDiscountsResponse, Error>
-    func fetchGameDetails(with id: String) -> AnyPublisher<GameInfo, Error>
-    func searchGame(with name: String) -> AnyPublisher<GameInfo, Error>
+    func fetchGames(with url: String) async -> Result<GamesResponse, NetworkError>
+    func fetchGameDetails(with id: Int) async -> Result<GameDetails, NetworkError>
 }
 
-
 final class NetworkService: NetworkServiceProtocol {
-       
-    func fetchDiscounts() -> AnyPublisher<GameDiscountsResponse, Error> {
-        let urlString = "https://platprices.com/api.php?key=6Kk4norkUTfFEXyIVQEL9Q0ZGUugCkRg&sale=441"
-
-        guard let url = URL(string: urlString) else {
-            return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
+    
+    func fetchGames(with url: String) async -> Result<GamesResponse, NetworkError> {
+        guard let url = URL(string: url) else { return .failure(.invalidURL)}
+        print(url)
+        do {
+            let (data, _) = try await URLSession.shared.data(from: url)
+            let gameResponse = try JSONDecoder().decode(GamesResponse.self, from: data)
+            return .success(gameResponse)
+        } catch {
+            if let urlError = error as? URLError {
+                return .failure(.urlSessionError(urlError))
+            } else {
+                return .failure(.decodingError(error))
+            }
         }
-        return URLSession.shared.dataTaskPublisher(for: url)
-            .map(\.data)
-            .decode(type: GameDiscountsResponse.self, decoder: JSONDecoder())
-            .receive(on: DispatchQueue.main)
-            .eraseToAnyPublisher()
     }
     
-    func fetchGameDetails(with id: String) -> AnyPublisher<GameInfo, Error> {
-        let urlString = "https://platprices.com/api.php?key=6Kk4norkUTfFEXyIVQEL9Q0ZGUugCkRg&ppid=\(id)"
-
-        guard let url = URL(string: urlString) else {
-            return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
+    func fetchGameDetails(with id: Int) async -> Result<GameDetails, NetworkError> {
+        
+        guard let url = URL(string: "https://api.rawg.io/api/games/\(id)?key=74f86270fe5542fdaa2d8bef8c84bf15") else { return .failure(.invalidURL)}
+        
+        do {
+            let (data, _) = try await URLSession.shared.data(from: url)
+            let gameResponse = try JSONDecoder().decode(GameDetails.self, from: data)
+            return .success(gameResponse)
+        } catch {
+            if let urlError = error as? URLError {
+                return .failure(.urlSessionError(urlError))
+            } else {
+                return .failure(.decodingError(error))
+            }
         }
-        return URLSession.shared.dataTaskPublisher(for: url)
-            .map(\.data)
-            .decode(type: GameInfo.self, decoder: JSONDecoder())
-            .receive(on: DispatchQueue.main)
-            .eraseToAnyPublisher()
-    }
-    
-    func searchGame(with name: String) -> AnyPublisher<GameInfo, Error> {
-        let name = name.replacingOccurrences(of: " ", with: "%20")
-        let urlString = "https://platprices.com/api.php?key=6Kk4norkUTfFEXyIVQEL9Q0ZGUugCkRg&name=\(name)"
-
-        guard let url = URL(string: urlString) else {
-            return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
-        }
-        return URLSession.shared.dataTaskPublisher(for: url)
-            .debounce(for: .seconds(2), scheduler: RunLoop.main)
-            .map(\.data)
-            .decode(type: GameInfo.self, decoder: JSONDecoder())
-            .receive(on: DispatchQueue.main)
-            .eraseToAnyPublisher()
-    }
-    
-    func fetchDiscounts() -> AnyPublisher<DiscountsResponse, Error> {
-        let urlString = "https://platprices.com/api.php?key=6Kk4norkUTfFEXyIVQEL9Q0ZGUugCkRg&sales=1"
-
-        guard let url = URL(string: urlString) else {
-            return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
-        }
-        return URLSession.shared.dataTaskPublisher(for: url)
-            .map(\.data)
-            .decode(type: DiscountsResponse.self, decoder: JSONDecoder())
-            .receive(on: DispatchQueue.main)
-            .eraseToAnyPublisher()
     }
 }
 
